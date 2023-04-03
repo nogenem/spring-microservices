@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +51,14 @@ public class ProductController {
     Page<Product> pagedProducts = productService.findAll(pageOptions);
 
     return mapStructMapper.pagedProductsToPagedProductsResponse(pagedProducts);
+  }
+
+  @GetMapping("/{sku}")
+  @ResponseStatus(HttpStatus.OK)
+  public ProductResponse findProductBySku(@PathVariable("sku") String sku) {
+    Product product = productService.findBySku(sku);
+
+    return mapStructMapper.productToProductResponse(product);
   }
 
   private Sort getSortBy(String sort) {

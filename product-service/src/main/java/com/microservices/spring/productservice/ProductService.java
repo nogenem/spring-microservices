@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.slugify.Slugify;
+import com.microservices.spring.productservice.exceptions.ProductWithThisSkuNotFoundException;
 import com.microservices.spring.productservice.requests.StoreProductRequest;
 
 import lombok.AllArgsConstructor;
@@ -45,6 +46,11 @@ public class ProductService {
 
   public Page<Product> findAll(Pageable pageOptions) {
     return productRepository.findAll(pageOptions);
+  }
+
+  public Product findBySku(String sku) {
+    return productRepository.findBySku(sku)
+        .orElseThrow(() -> new ProductWithThisSkuNotFoundException(sku));
   }
 
 }
