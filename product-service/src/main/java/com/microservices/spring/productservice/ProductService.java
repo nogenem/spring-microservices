@@ -1,5 +1,7 @@
 package com.microservices.spring.productservice;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.slugify.Slugify;
@@ -39,6 +41,10 @@ public class ProductService {
     }
 
     return slug;
+  }
+
+  public Page<Product> findAll(Pageable pageOptions) {
+    return productRepository.findAll(pageOptions);
   }
 
 }
