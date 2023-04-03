@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+
+  product-service:
+    container_name: product-service
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+      args:
+        username: dockeruser
+        useruid: 1000
+        usergid: 1000
+        service_folder_name: product-service
+    ports:
+      - 8000:8000 # App
+      - 8096:5005 # Debugger
+      - 8097:35729 # Livereload
+    volumes:
+      - ./product-service:/app/product-service
+      - ./pom.xml:/app/pom.xml
+      - ./.env:/app/.env
+      - ${HOME}/.m2:/home/dockeruser/.m2
+    depends_on:
+      - product-service-mongo
+
+  product-service-mongo:
+    image: mongo:6.0.5
+    command: mongod --port 8098
+    restart: always
+    ports:
+      - 8098:8098
+    expose:
+      - 8098
+    volumes:
+      - ./_databases/product-service-mongo-data:/data/db:rw
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
+  product-service-mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8099:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_MONGODB_URL: mongodb://root:root@product-service-mongo:8098/
+    depends_on:
+      - product-service-mongo
