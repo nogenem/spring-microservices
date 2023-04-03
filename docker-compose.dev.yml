@@ -8,44 +8,46 @@ services:
       context: ./
       dockerfile: ./Dockerfile.dev
       args:
-        username: dockeruser
-        useruid: 1000
-        usergid: 1000
+        username: ${DOCKER_IMAGES_OS_USERNAME}
+        useruid: ${DOCKER_IMAGES_OS_USERUID}
+        usergid: ${DOCKER_IMAGES_OS_USERGID}
         service_folder_name: product-service
     ports:
-      - 8000:8000 # App
-      - 8096:5005 # Debugger
-      - 8097:35729 # Livereload
+      - ${PRODUCT_SERVICE_PORT}:${PRODUCT_SERVICE_PORT} # App
+      - ${PRODUCT_SERVICE_DEBUGGER_PORT}:5005 # Debugger
+      - ${PRODUCT_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./product-service:/app/product-service
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env
-      - ${HOME}/.m2:/home/dockeruser/.m2
+      - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
       - product-service-mongo
 
   product-service-mongo:
+    container_name: product-service-mongo
     image: mongo:6.0.5
-    command: mongod --port 8098
+    command: mongod --port ${PRODUCT_SERVICE_MONGO_PORT}
     restart: always
     ports:
-      - 8098:8098
+      - ${PRODUCT_SERVICE_MONGO_PORT}:${PRODUCT_SERVICE_MONGO_PORT}
     expose:
-      - 8098
+      - ${PRODUCT_SERVICE_MONGO_PORT}
     volumes:
       - ./_databases/product-service-mongo-data:/data/db:rw
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: ${PRODUCT_SERVICE_MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${PRODUCT_SERVICE_MONGO_PASSWORD}
 
   product-service-mongo-express:
+    container_name: product-service-mongo-express
     image: mongo-express
     restart: always
     ports:
-      - 8099:8081
+      - ${PRODUCT_SERVICE_MONGO_EXPRESS_PORT}:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_URL: mongodb://root:root@product-service-mongo:8098/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${PRODUCT_SERVICE_MONGO_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${PRODUCT_SERVICE_MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${PRODUCT_SERVICE_MONGO_USERNAME}:${PRODUCT_SERVICE_MONGO_PASSWORD}@${PRODUCT_SERVICE_MONGO_HOST}:${PRODUCT_SERVICE_MONGO_PORT}/
     depends_on:
       - product-service-mongo
