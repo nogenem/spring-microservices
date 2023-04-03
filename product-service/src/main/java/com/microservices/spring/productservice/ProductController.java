@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microservices.spring.productservice.requests.StoreProductRequest;
+import com.microservices.spring.productservice.requests.UpdateProductRequest;
 import com.microservices.spring.productservice.responses.PagedProductsResponse;
 import com.microservices.spring.productservice.responses.ProductResponse;
 
@@ -57,6 +59,15 @@ public class ProductController {
   @ResponseStatus(HttpStatus.OK)
   public ProductResponse findProductBySku(@PathVariable("sku") String sku) {
     Product product = productService.findBySku(sku);
+
+    return mapStructMapper.productToProductResponse(product);
+  }
+
+  @PutMapping("/{sku}")
+  @ResponseStatus(HttpStatus.OK)
+  public ProductResponse updateProductBySku(@PathVariable("sku") String sku,
+      @Valid @RequestBody UpdateProductRequest request) {
+    Product product = productService.updateProduct(sku, request);
 
     return mapStructMapper.productToProductResponse(product);
   }
