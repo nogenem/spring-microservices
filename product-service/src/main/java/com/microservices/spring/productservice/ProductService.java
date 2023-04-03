@@ -56,6 +56,14 @@ public class ProductService {
     return product;
   }
 
+  public void deleteProduct(String sku) {
+    Product product = findBySku(sku);
+
+    productRepository.delete(product);
+
+    log.info("Product deleted. Id: {} - Sku: {}", product.getId(), product.getSku());
+  }
+
   private String getValidSlug(String slug, String name) {
     final Slugify slg = Slugify.builder().build();
 
