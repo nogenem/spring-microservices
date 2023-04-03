@@ -1,10 +1,8 @@
 package com.microservices.spring.productservice;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import com.github.slugify.Slugify;
-import com.microservices.spring.productservice.exceptions.ProductWithThisSkuOrSlugAlreadyExistsException;
 import com.microservices.spring.productservice.requests.StoreProductRequest;
 
 import lombok.AllArgsConstructor;
@@ -24,11 +22,7 @@ public class ProductService {
 
     Product product = mapStructMapper.storeProductRequestToProduct(request);
 
-    try {
-      product = productRepository.save(product);
-    } catch (DuplicateKeyException exception) {
-      throw new ProductWithThisSkuOrSlugAlreadyExistsException(product.getSku(), slug);
-    }
+    product = productRepository.save(product);
 
     log.info("Product saved. Id: {} - Sku: {}", product.getId(), product.getSku());
 
