@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
+import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
 import com.microservices.spring.inventoryservice.responses.InventoryResponse;
 import com.microservices.spring.inventoryservice.responses.PagedInventoryResponse;
 
@@ -76,6 +78,20 @@ public class InventoryController {
       @ApiResponse(responseCode = "404", description = "Inventory with this sku wasn't found", content = @Content) })
   public InventoryResponse findInventoryBySku(@PathVariable("sku") String sku) {
     Inventory inventory = inventoryService.findBySku(sku);
+
+    return mapStructMapper.inventoryToInventoryResponse(inventory);
+  }
+
+  @PutMapping("/{sku}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(summary = "Update an inventory by its sku")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "The updated inventory"),
+      @ApiResponse(responseCode = "404", description = "Inventory with this sku wasn't found", content = @Content),
+      @ApiResponse(responseCode = "422", description = "Validation errors", content = @Content) })
+  public InventoryResponse updateInventoryBySku(@PathVariable("sku") String sku,
+      @Valid @RequestBody UpdateInventoryRequest request) {
+    Inventory inventory = inventoryService.updateInventory(sku, request);
 
     return mapStructMapper.inventoryToInventoryResponse(inventory);
   }

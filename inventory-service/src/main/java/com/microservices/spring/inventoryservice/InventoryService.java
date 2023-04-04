@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.microservices.spring.inventoryservice.exceptions.InventoryWithThisSkuNotFoundException;
 import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
+import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,18 @@ public class InventoryService {
   public Inventory findBySku(String sku) {
     return inventoryRepository.findBySku(sku)
         .orElseThrow(() -> new InventoryWithThisSkuNotFoundException(sku));
+  }
+
+  public Inventory updateInventory(String sku, @Valid UpdateInventoryRequest request) {
+    Inventory inventory = findBySku(sku);
+    mapStructMapper.updateInventoryFromUpdateInventoryRequest(request, inventory);
+
+    inventory = inventoryRepository.save(inventory);
+
+    log.info("Inventory updated. Id: {} - Sku: {} - New Quantity: {}", inventory.getId(), inventory.getSku(),
+        inventory.getQuantity());
+
+    return inventory;
   }
 
 }
