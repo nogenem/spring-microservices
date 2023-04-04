@@ -24,6 +24,28 @@ services:
     depends_on:
       - product-service-mongo
 
+  inventory-service:
+    container_name: inventory-service
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+      args:
+        username: ${DOCKER_IMAGES_OS_USERNAME}
+        useruid: ${DOCKER_IMAGES_OS_USERUID}
+        usergid: ${DOCKER_IMAGES_OS_USERGID}
+        service_folder_name: inventory-service
+    ports:
+      - ${INVENTORY_SERVICE_PORT}:${INVENTORY_SERVICE_PORT} # App
+      - ${INVENTORY_SERVICE_DEBUGGER_PORT}:5005 # Debugger
+      - ${INVENTORY_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
+    volumes:
+      - ./inventory-service:/app/inventory-service
+      - ./pom.xml:/app/pom.xml
+      - ./.env:/app/.env
+      - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
+    depends_on:
+      - inventory-service-postgres
+
   product-service-mongo:
     container_name: product-service-mongo
     image: mongo:6.0.5
@@ -51,3 +73,32 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://${PRODUCT_SERVICE_MONGO_USERNAME}:${PRODUCT_SERVICE_MONGO_PASSWORD}@${PRODUCT_SERVICE_MONGO_HOST}:${PRODUCT_SERVICE_MONGO_PORT}/
     depends_on:
       - product-service-mongo
+
+  inventory-service-postgres:
+    container_name: inventory-service-postgres
+    image: postgres:15.2
+    command: -p ${INVENTORY_SERVICE_POSTGRES_PORT}
+    restart: always
+    ports:
+      - ${INVENTORY_SERVICE_POSTGRES_PORT}:${INVENTORY_SERVICE_POSTGRES_PORT}
+    expose:
+      - ${INVENTORY_SERVICE_POSTGRES_PORT}
+    volumes:
+      - ./_databases/inventory-service-postgres-data:/data/postgres:rw
+    environment:
+      POSTGRES_DB: ${INVENTORY_SERVICE_POSTGRES_DATABASE}
+      POSTGRES_USER: ${INVENTORY_SERVICE_POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${INVENTORY_SERVICE_POSTGRES_PASSWORD}
+      PGPORT: ${INVENTORY_SERVICE_POSTGRES_PORT}
+      PGDATA: /data/postgres
+
+  inventory-service-postgres-adminer:
+    container_name: inventory-service-postgres-adminer
+    image: adminer
+    restart: always
+    ports:
+      - ${INVENTORY_SERVICE_POSTGRES_ADMINER_PORT}:8080
+    environment:
+      - ADMINER_DEFAULT_SERVER=${INVENTORY_SERVICE_POSTGRES_HOST}:${INVENTORY_SERVICE_POSTGRES_PORT}
+    depends_on:
+      - inventory-service-postgres
