@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,6 +66,18 @@ public class InventoryController {
     Page<Inventory> pagedInventory = inventoryService.findAll(pageOptions);
 
     return mapStructMapper.pagedInventoryToPagedInventoryResponse(pagedInventory);
+  }
+
+  @GetMapping("/{sku}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(summary = "Get an inventory by its sku")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "The inventory found"),
+      @ApiResponse(responseCode = "404", description = "Inventory with this sku wasn't found", content = @Content) })
+  public InventoryResponse findInventoryBySku(@PathVariable("sku") String sku) {
+    Inventory inventory = inventoryService.findBySku(sku);
+
+    return mapStructMapper.inventoryToInventoryResponse(inventory);
   }
 
   private Sort getSortBy(String sort) {

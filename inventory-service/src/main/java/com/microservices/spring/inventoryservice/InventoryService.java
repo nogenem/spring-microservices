@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.microservices.spring.inventoryservice.exceptions.InventoryWithThisSkuNotFoundException;
 import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
 
 import jakarta.validation.Valid;
@@ -31,6 +32,11 @@ public class InventoryService {
 
   public Page<Inventory> findAll(Pageable pageOptions) {
     return inventoryRepository.findAll(pageOptions);
+  }
+
+  public Inventory findBySku(String sku) {
+    return inventoryRepository.findBySku(sku)
+        .orElseThrow(() -> new InventoryWithThisSkuNotFoundException(sku));
   }
 
 }
