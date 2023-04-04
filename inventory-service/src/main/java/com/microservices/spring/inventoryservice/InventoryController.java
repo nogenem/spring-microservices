@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,6 +95,16 @@ public class InventoryController {
     Inventory inventory = inventoryService.updateInventory(sku, request);
 
     return mapStructMapper.inventoryToInventoryResponse(inventory);
+  }
+
+  @DeleteMapping("/{sku}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @Operation(summary = "Delete an inventory by its sku")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "204"),
+      @ApiResponse(responseCode = "404", description = "Inventory with this sku wasn't found", content = @Content) })
+  public void deleteInventoryBySku(@PathVariable("sku") String sku) {
+    inventoryService.deleteInventory(sku);
   }
 
   private Sort getSortBy(String sort) {

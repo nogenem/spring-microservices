@@ -52,4 +52,13 @@ public class InventoryService {
     return inventory;
   }
 
+  public void deleteInventory(String sku) {
+    Inventory inventory = findBySku(sku);
+
+    inventoryRepository.delete(inventory);
+
+    log.info("Inventory deleted. Id: {} - Sku: {} - Quantity: {}", inventory.getId(), inventory.getSku(),
+        inventory.getQuantity());
+  }
+
 }
