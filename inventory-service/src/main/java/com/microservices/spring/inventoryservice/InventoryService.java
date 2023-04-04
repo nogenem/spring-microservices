@@ -1,5 +1,7 @@
 package com.microservices.spring.inventoryservice;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
@@ -25,6 +27,10 @@ public class InventoryService {
         inventory.getQuantity());
 
     return inventory;
+  }
+
+  public Page<Inventory> findAll(Pageable pageOptions) {
+    return inventoryRepository.findAll(pageOptions);
   }
 
 }
