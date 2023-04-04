@@ -33,7 +33,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/inventory")
+@RequestMapping("/api/inventories")
 @Validated
 @Tag(name = "Inventory API")
 public class InventoryController {

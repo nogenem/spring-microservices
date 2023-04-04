@@ -36,7 +36,7 @@ public class StoreInventoryTest extends BaseIntegrationTest {
   public void shouldBeAbleToStoreInventories() throws JsonProcessingException, Exception {
     StoreInventoryRequest request = storeInventoryRequestFactory.createOne();
 
-    ResultActions resultActions = mvc.perform(post("/api/inventory")
+    ResultActions resultActions = mvc.perform(post("/api/inventories")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(request)));
 
@@ -61,7 +61,7 @@ public class StoreInventoryTest extends BaseIntegrationTest {
     StoreInventoryRequest request = storeInventoryRequestFactory.createOne();
     request.setSku(sku);
 
-    ResultActions resultActions = mvc.perform(post("/api/inventory")
+    ResultActions resultActions = mvc.perform(post("/api/inventories")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(request)));
 
@@ -82,7 +82,7 @@ public class StoreInventoryTest extends BaseIntegrationTest {
         .quantity(0)
         .build();
 
-    ResultActions resultActions = mvc.perform(post("/api/inventory")
+    ResultActions resultActions = mvc.perform(post("/api/inventories")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(request)));
 
