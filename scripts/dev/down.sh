@@ -1,3 +1,4 @@
 #!/bin/sh
 
-docker-compose -f docker-compose.dev.yml down $1
+echo "\n"Command: docker-compose -f docker-compose.dev.yml down "$@" "\n"
+docker-compose -f docker-compose.dev.yml down "$@"

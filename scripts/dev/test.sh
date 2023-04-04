@@ -8,4 +8,8 @@ if [ -z "$1" ]
     exit 1
 fi
 
-./mvnw -f $1 test $2
+pom="$1"
+shift
+
+echo "\n"Command: ./mvnw -f "$pom" test "${@}" "\n"
+./mvnw -f "$pom" test "${@}"
