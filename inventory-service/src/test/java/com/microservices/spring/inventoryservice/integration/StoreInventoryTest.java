@@ -12,10 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.microservices.spring.common.exceptions.ValidationErrorsException;
 import com.microservices.spring.inventoryservice.BaseIntegrationTest;
 import com.microservices.spring.inventoryservice.Inventory;
 import com.microservices.spring.inventoryservice.InventoryRepository;
-import com.microservices.spring.inventoryservice.exceptions.ValidationErrorsException;
 import com.microservices.spring.inventoryservice.factories.FakeInventoryFactory;
 import com.microservices.spring.inventoryservice.factories.requests.FakeStoreInventoryRequestFactory;
 import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;

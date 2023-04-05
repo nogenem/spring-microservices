@@ -14,11 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.microservices.spring.common.exceptions.ValidationErrorsException;
 import com.microservices.spring.productservice.BaseIntegrationTest;
 import com.microservices.spring.productservice.Product;
 import com.microservices.spring.productservice.ProductRepository;
 import com.microservices.spring.productservice.exceptions.ProductWithThisSkuNotFoundException;
-import com.microservices.spring.productservice.exceptions.ValidationErrorsException;
 import com.microservices.spring.productservice.factories.FakeProductFactory;
 import com.microservices.spring.productservice.factories.requests.FakeUpdateProductRequestFactory;
 import com.microservices.spring.productservice.requests.UpdateProductRequest;

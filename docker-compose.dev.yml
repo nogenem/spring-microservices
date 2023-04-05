@@ -18,6 +18,7 @@ services:
       - ${PRODUCT_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./product-service:/app/product-service
+      - ./common:/app/common
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
@@ -40,6 +41,7 @@ services:
       - ${INVENTORY_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./inventory-service:/app/inventory-service
+      - ./common:/app/common
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2

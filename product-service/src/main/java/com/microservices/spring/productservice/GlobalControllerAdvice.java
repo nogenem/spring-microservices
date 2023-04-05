@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.microservices.spring.productservice.exceptions.ApiException;
-import com.microservices.spring.productservice.exceptions.ApiException.ValidationErrorsMap;
-import com.microservices.spring.productservice.exceptions.InternalServerErrorException;
-import com.microservices.spring.productservice.exceptions.ValidationErrorsException;
+import com.microservices.spring.common.exceptions.ApiException;
+import com.microservices.spring.common.exceptions.ApiException.ValidationErrorsMap;
+import com.microservices.spring.common.exceptions.InternalServerErrorException;
+import com.microservices.spring.common.exceptions.ValidationErrorsException;
 import com.microservices.spring.productservice.responses.ExceptionResponse;
 
 import jakarta.validation.ConstraintViolation;

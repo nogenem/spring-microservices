@@ -2,8 +2,9 @@
 
 FROM eclipse-temurin:17-jdk-focal
 
-RUN apt-get update && \
-  apt-get install gosu -y
+RUN --mount=type=cache,target=/var/cache/apt \
+  apt-get update && \
+  apt-get --no-install-recommends install -y gosu
 
 ARG service_folder_name
 ARG username
@@ -21,15 +22,17 @@ WORKDIR /app
 
 COPY --chown=$username:$username ./pom.xml ./mvnw ./.env ./
 COPY --chown=$username:$username ./.mvn/ ./.mvn
-COPY --chown=$username:$username ./$service_folder_name/pom.xml ./$service_folder_name/
+COPY --chown=$username:$username ./common/pom.xml ./common/
+COPY --chown=$username:$username ./inventory-service/pom.xml ./inventory-service/
+COPY --chown=$username:$username ./product-service/pom.xml ./product-service/
 
 RUN --mount=type=cache,target=/home/$username/.m2,uid=$useruid,gid=$usergid \
-  gosu $username ./mvnw -f ./$service_folder_name/pom.xml -e dependency:go-offline
+  gosu $username ./mvnw -am -pl $service_folder_name -e dependency:go-offline
 
-COPY --chown=$username:$username ./$service_folder_name/src ./$service_folder_name/src
+COPY --chown=$username:$username ./$service_folder_name/target ./$service_folder_name/target
 
 USER $username
 
 ENV SERVICE_FOLDER_NAME ${service_folder_name}
 
-CMD ./mvnw -f ./${SERVICE_FOLDER_NAME}/pom.xml -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" spring-boot:run
+CMD ./mvnw -am -pl ${SERVICE_FOLDER_NAME} -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" spring-boot:run

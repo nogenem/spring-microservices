@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 
-import com.microservices.spring.productservice.exceptions.ApiException;
+import com.microservices.spring.common.exceptions.ApiException;
 import com.microservices.spring.productservice.requests.StoreProductRequest;
 import com.microservices.spring.productservice.requests.UpdateProductRequest;
 import com.microservices.spring.productservice.responses.ExceptionResponse;

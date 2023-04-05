@@ -2,6 +2,8 @@ package com.microservices.spring.inventoryservice.exceptions;
 
 import org.springframework.http.HttpStatus;
 
+import com.microservices.spring.common.exceptions.ApiException;
+
 public class InventoryWithThisSkuNotFoundException extends ApiException {
 
   public final static String CODE = "INVENTORY_WITH_THIS_SKU_NOT_FOUND";

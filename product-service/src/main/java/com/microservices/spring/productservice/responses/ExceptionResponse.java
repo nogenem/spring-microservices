@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.microservices.spring.productservice.exceptions.ApiException.ValidationErrorsMap;
+import com.microservices.spring.common.exceptions.ApiException.ValidationErrorsMap;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

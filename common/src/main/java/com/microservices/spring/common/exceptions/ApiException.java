@@ -1,4 +1,4 @@
-package com.microservices.spring.inventoryservice.exceptions;
+package com.microservices.spring.common.exceptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.microservices.spring.productservice.exceptions;
+package com.microservices.spring.common.exceptions;
 
 import org.springframework.http.HttpStatus;
 
