@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
-echo "\n"Command: docker-compose -f docker-compose.dev.yml down "$@" "\n"
+echo -e "\n"Command: docker-compose -f docker-compose.dev.yml down "$@" "\n"
 docker-compose -f docker-compose.dev.yml down "$@"
