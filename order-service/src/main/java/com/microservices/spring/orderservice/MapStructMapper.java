@@ -8,8 +8,8 @@ import com.microservices.spring.common.exceptions.ApiException;
 import com.microservices.spring.common.responses.ExceptionResponse;
 import com.microservices.spring.orderservice.models.Order;
 import com.microservices.spring.orderservice.models.OrderLineItem;
-import com.microservices.spring.orderservice.requests.StoreOrderLineItemRequest;
-import com.microservices.spring.orderservice.requests.StoreOrderRequest;
+import com.microservices.spring.orderservice.requests.PlaceOrderLineItemRequest;
+import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
 import com.microservices.spring.orderservice.responses.OrderResponse;
 import com.microservices.spring.orderservice.responses.PagedOrderResponse;
 
@@ -18,12 +18,12 @@ public interface MapStructMapper {
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "orderNumber", expression = "java(java.util.UUID.randomUUID())")
-  Order storeOrderRequestToOrder(StoreOrderRequest orderRequest);
+  Order placeOrderRequestToOrder(PlaceOrderRequest orderRequest);
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "order", ignore = true)
   @Mapping(target = "productPrice", ignore = true)
-  OrderLineItem storeOrderLineItemRequestToOrderLineItem(StoreOrderLineItemRequest orderLineItemRequest);
+  OrderLineItem placeOrderLineItemRequestToOrderLineItem(PlaceOrderLineItemRequest orderLineItemRequest);
 
   OrderResponse orderToOrderResponse(Order order);
 

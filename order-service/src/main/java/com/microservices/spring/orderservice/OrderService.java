@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.microservices.spring.orderservice.exceptions.OrderWithThisOrderNumberNotFoundException;
 import com.microservices.spring.orderservice.models.Order;
-import com.microservices.spring.orderservice.requests.StoreOrderRequest;
+import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +21,11 @@ public class OrderService {
   private OrderRepository orderRepository;
   private final MapStructMapper mapStructMapper;
 
-  public Order placeOrder(StoreOrderRequest request) {
+  public Order placeOrder(PlaceOrderRequest request) {
     // TODO: Check inventory-service for the availability of the products
     // TODO: Get product prices from the product-service
 
-    Order order = mapStructMapper.storeOrderRequestToOrder(request);
+    Order order = mapStructMapper.placeOrderRequestToOrder(request);
     order.getLineItems().stream().forEach(item -> {
       item.setOrder(order);
       item.setProductPrice(1000); // TODO: Change this

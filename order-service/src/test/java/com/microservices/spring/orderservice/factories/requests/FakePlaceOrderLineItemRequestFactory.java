@@ -7,25 +7,25 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
-import com.microservices.spring.orderservice.requests.StoreOrderLineItemRequest;
+import com.microservices.spring.orderservice.requests.PlaceOrderLineItemRequest;
 
 import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor
-public class FakeStoreOrderLineItemRequestFactory {
+public class FakePlaceOrderLineItemRequestFactory {
 
   private final Faker faker;
 
-  public StoreOrderLineItemRequest createOne() {
-    return StoreOrderLineItemRequest.builder()
+  public PlaceOrderLineItemRequest createOne() {
+    return PlaceOrderLineItemRequest.builder()
         .productSku(UUID.randomUUID().toString())
         .quantity(faker.random().nextInt(1, 10))
         .build();
   }
 
-  public List<StoreOrderLineItemRequest> createMany(int length) {
-    List<StoreOrderLineItemRequest> lineItems = new ArrayList<>();
+  public List<PlaceOrderLineItemRequest> createMany(int length) {
+    List<PlaceOrderLineItemRequest> lineItems = new ArrayList<>();
 
     for (int i = 0; i < length; i++) {
       lineItems.add(createOne());

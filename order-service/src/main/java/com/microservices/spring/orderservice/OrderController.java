@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.microservices.spring.orderservice.exceptions.InvalidOrderNumberException;
 import com.microservices.spring.orderservice.models.Order;
-import com.microservices.spring.orderservice.requests.StoreOrderRequest;
+import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
 import com.microservices.spring.orderservice.responses.OrderResponse;
 import com.microservices.spring.orderservice.responses.PagedOrderResponse;
 
@@ -48,7 +48,7 @@ public class OrderController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Order placed"),
       @ApiResponse(responseCode = "422", description = "Validation errors", content = @Content) })
-  public OrderResponse placeOrder(@Valid @RequestBody StoreOrderRequest request) {
+  public OrderResponse placeOrder(@Valid @RequestBody PlaceOrderRequest request) {
     Order order = orderService.placeOrder(request);
 
     return mapStructMapper.orderToOrderResponse(order);

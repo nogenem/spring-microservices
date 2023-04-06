@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class StoreOrderLineItemRequest {
+public class PlaceOrderLineItemRequest {
 
   @NotNull
   @Size(min = 4, max = 40, message = "length must be between 4 and 40")

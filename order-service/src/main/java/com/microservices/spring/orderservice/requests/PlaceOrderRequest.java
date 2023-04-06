@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StoreOrderRequest {
+public class PlaceOrderRequest {
 
   @Size(min = 1, message = "need at least one line item")
   @Valid
-  List<StoreOrderLineItemRequest> lineItems;
+  List<PlaceOrderLineItemRequest> lineItems;
 
 }

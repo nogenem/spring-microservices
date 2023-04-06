@@ -16,18 +16,18 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.microservices.spring.common.exceptions.ValidationErrorsException;
 import com.microservices.spring.orderservice.BaseIntegrationTest;
-import com.microservices.spring.orderservice.factories.requests.FakeStoreOrderRequestFactory;
-import com.microservices.spring.orderservice.requests.StoreOrderRequest;
+import com.microservices.spring.orderservice.factories.requests.FakePlaceOrderRequestFactory;
+import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
 
 public class PlaceOrderTest extends BaseIntegrationTest {
 
   @Autowired
-  private FakeStoreOrderRequestFactory storeOrderRequestFactory;
+  private FakePlaceOrderRequestFactory placeOrderRequestFactory;
 
   @Test
   @DisplayName("Should be able to place orders")
   public void shouldBeAbleToPlaceOrders() throws JsonProcessingException, Exception {
-    StoreOrderRequest request = storeOrderRequestFactory.createOne(2);
+    PlaceOrderRequest request = placeOrderRequestFactory.createOne(2);
 
     ResultActions resultActions = mvc.perform(post("/api/orders")
         .contentType(MediaType.APPLICATION_JSON)
@@ -48,7 +48,7 @@ public class PlaceOrderTest extends BaseIntegrationTest {
   public void shouldNotBeAbleToPlaceOrderThatDontComplyByTheValidations()
       throws JsonProcessingException, Exception {
     // Zero line items
-    StoreOrderRequest request = StoreOrderRequest.builder()
+    PlaceOrderRequest request = PlaceOrderRequest.builder()
         .lineItems(new ArrayList<>())
         .build();
 
@@ -66,7 +66,7 @@ public class PlaceOrderTest extends BaseIntegrationTest {
     Assertions.assertEquals(0, orderRepository.findAll().size());
 
     // Line item with invalid quantity
-    request = storeOrderRequestFactory.createOne(1);
+    request = placeOrderRequestFactory.createOne(1);
     request.getLineItems().get(0).setQuantity(-1);
 
     resultActions = mvc.perform(post("/api/orders")
