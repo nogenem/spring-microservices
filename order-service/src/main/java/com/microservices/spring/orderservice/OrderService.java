@@ -1,9 +1,12 @@
 package com.microservices.spring.orderservice;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.microservices.spring.orderservice.exceptions.OrderWithThisOrderNumberNotFoundException;
 import com.microservices.spring.orderservice.models.Order;
 import com.microservices.spring.orderservice.requests.StoreOrderRequest;
 
@@ -37,6 +40,11 @@ public class OrderService {
 
   public Page<Order> findAll(Pageable pageOptions) {
     return orderRepository.findAll(pageOptions);
+  }
+
+  public Order findByOrderNumber(UUID orderNumber) {
+    return orderRepository.findByOrderNumber(orderNumber)
+        .orElseThrow(() -> new OrderWithThisOrderNumberNotFoundException(orderNumber));
   }
 
 }

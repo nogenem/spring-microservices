@@ -1,5 +1,7 @@
 package com.microservices.spring.orderservice;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservices.spring.orderservice.exceptions.InvalidOrderNumberException;
 import com.microservices.spring.orderservice.models.Order;
 import com.microservices.spring.orderservice.requests.StoreOrderRequest;
 import com.microservices.spring.orderservice.responses.OrderResponse;
@@ -66,6 +70,29 @@ public class OrderController {
     Page<Order> pagedOrder = orderService.findAll(pageOptions);
 
     return mapStructMapper.pagedOrderToPagedOrderResponse(pagedOrder);
+  }
+
+  @GetMapping("/{order_number}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(summary = "Get an order by its order_number")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "The order found"),
+      @ApiResponse(responseCode = "400", description = "Invalid order_number", content = @Content),
+      @ApiResponse(responseCode = "404", description = "Order with this order_number wasn't found", content = @Content) })
+  public OrderResponse findOrderByOrderNumber(
+      @PathVariable("order_number") String orderNumber) {
+    UUID orderNumberUuid = orderNumberStringToUuid(orderNumber);
+    Order order = orderService.findByOrderNumber(orderNumberUuid);
+
+    return mapStructMapper.orderToOrderResponse(order);
+  }
+
+  private UUID orderNumberStringToUuid(String orderNumber) {
+    try {
+      return UUID.fromString(orderNumber);
+    } catch (IllegalArgumentException exception) {
+      throw new InvalidOrderNumberException(orderNumber);
+    }
   }
 
   private Sort getSortBy(String sort) {
