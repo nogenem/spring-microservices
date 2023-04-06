@@ -13,9 +13,10 @@
   </parent>
 
   <modules>
+    <module>common</module>
     <module>product-service</module>
     <module>inventory-service</module>
-    <module>common</module>
+    <module>order-service</module>
   </modules>
 
   <groupId>com.microservices.spring</groupId>

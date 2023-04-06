@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
 
+  # SERVICES
   product-service:
     container_name: product-service
     build:
@@ -48,6 +49,30 @@ services:
     depends_on:
       - inventory-service-postgres
 
+  order-service:
+    container_name: order-service
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+      args:
+        username: ${DOCKER_IMAGES_OS_USERNAME}
+        useruid: ${DOCKER_IMAGES_OS_USERUID}
+        usergid: ${DOCKER_IMAGES_OS_USERGID}
+        service_folder_name: order-service
+    ports:
+      - ${ORDER_SERVICE_PORT}:${ORDER_SERVICE_PORT} # App
+      - ${ORDER_SERVICE_DEBUGGER_PORT}:5005 # Debugger
+      - ${ORDER_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
+    volumes:
+      - ./order-service:/app/order-service
+      - ./common:/app/common
+      - ./pom.xml:/app/pom.xml
+      - ./.env:/app/.env
+      - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
+    depends_on:
+      - order-service-postgres
+
+  # MONGO
   product-service-mongo:
     container_name: product-service-mongo
     image: mongo:6.0.5
@@ -76,6 +101,7 @@ services:
     depends_on:
       - product-service-mongo
 
+  # POSTGRES
   inventory-service-postgres:
     container_name: inventory-service-postgres
     image: postgres:15.2
@@ -94,13 +120,30 @@ services:
       PGPORT: ${INVENTORY_SERVICE_POSTGRES_PORT}
       PGDATA: /data/postgres
 
-  inventory-service-postgres-adminer:
-    container_name: inventory-service-postgres-adminer
+  order-service-postgres:
+    container_name: order-service-postgres
+    image: postgres:15.2
+    command: -p ${ORDER_SERVICE_POSTGRES_PORT}
+    restart: always
+    ports:
+      - ${ORDER_SERVICE_POSTGRES_PORT}:${ORDER_SERVICE_POSTGRES_PORT}
+    expose:
+      - ${ORDER_SERVICE_POSTGRES_PORT}
+    volumes:
+      - ./_databases/order-service-postgres-data:/data/postgres:rw
+    environment:
+      POSTGRES_DB: ${ORDER_SERVICE_POSTGRES_DATABASE}
+      POSTGRES_USER: ${ORDER_SERVICE_POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${ORDER_SERVICE_POSTGRES_PASSWORD}
+      PGPORT: ${ORDER_SERVICE_POSTGRES_PORT}
+      PGDATA: /data/postgres
+
+  postgres-adminer:
+    container_name: postgres-adminer
     image: adminer
     restart: always
     ports:
-      - ${INVENTORY_SERVICE_POSTGRES_ADMINER_PORT}:8080
-    environment:
-      - ADMINER_DEFAULT_SERVER=${INVENTORY_SERVICE_POSTGRES_HOST}:${INVENTORY_SERVICE_POSTGRES_PORT}
+      - ${POSTGRES_ADMINER_PORT}:8080
     depends_on:
       - inventory-service-postgres
+      - order-service-postgres

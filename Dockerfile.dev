@@ -25,6 +25,7 @@ COPY --chown=$username:$username ./.mvn/ ./.mvn
 COPY --chown=$username:$username ./common/pom.xml ./common/
 COPY --chown=$username:$username ./inventory-service/pom.xml ./inventory-service/
 COPY --chown=$username:$username ./product-service/pom.xml ./product-service/
+COPY --chown=$username:$username ./order-service/pom.xml ./order-service/
 
 RUN --mount=type=cache,target=/home/$username/.m2,uid=$useruid,gid=$usergid \
   gosu $username ./mvnw -am -pl $service_folder_name -e dependency:go-offline
