@@ -17,7 +17,7 @@ import com.microservices.spring.common.exceptions.ApiException;
 import com.microservices.spring.common.exceptions.ApiException.ValidationErrorsMap;
 import com.microservices.spring.common.exceptions.InternalServerErrorException;
 import com.microservices.spring.common.exceptions.ValidationErrorsException;
-import com.microservices.spring.productservice.responses.ExceptionResponse;
+import com.microservices.spring.common.responses.ExceptionResponse;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

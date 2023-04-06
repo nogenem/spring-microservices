@@ -6,9 +6,9 @@ import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 
 import com.microservices.spring.common.exceptions.ApiException;
+import com.microservices.spring.common.responses.ExceptionResponse;
 import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
 import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
-import com.microservices.spring.inventoryservice.responses.ExceptionResponse;
 import com.microservices.spring.inventoryservice.responses.InventoryResponse;
 import com.microservices.spring.inventoryservice.responses.PagedInventoryResponse;
 

@@ -1,4 +1,4 @@
-package com.microservices.spring.inventoryservice.responses;
+package com.microservices.spring.common.responses;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
