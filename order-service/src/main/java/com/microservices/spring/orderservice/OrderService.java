@@ -1,5 +1,7 @@
 package com.microservices.spring.orderservice;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.microservices.spring.orderservice.models.Order;
@@ -31,6 +33,10 @@ public class OrderService {
     log.info("Order saved. Id: {} - OrderNumber: {}", order.getId(), order.getOrderNumber());
 
     return order;
+  }
+
+  public Page<Order> findAll(Pageable pageOptions) {
+    return orderRepository.findAll(pageOptions);
   }
 
 }
