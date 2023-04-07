@@ -21,6 +21,7 @@
     <module>order-service</module>
     <module>order-service-contracts</module>
     <module>discovery-server-service</module>
+    <module>api-gateway-service</module>
   </modules>
 
   <groupId>com.microservices.spring</groupId>

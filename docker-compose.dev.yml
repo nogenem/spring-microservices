@@ -98,6 +98,28 @@ services:
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
 
+  api-gateway-service:
+    container_name: api-gateway-service
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+      args:
+        username: ${DOCKER_IMAGES_OS_USERNAME}
+        useruid: ${DOCKER_IMAGES_OS_USERUID}
+        usergid: ${DOCKER_IMAGES_OS_USERGID}
+        service_folder_name: api-gateway-service
+    ports:
+      - ${API_GATEWAY_SERVICE_PORT}:${API_GATEWAY_SERVICE_PORT} # App
+      - ${API_GATEWAY_SERVICE_DEBUGGER_PORT}:5005 # Debugger
+      - ${API_GATEWAY_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
+    volumes:
+      - ./api-gateway-service:/app/api-gateway-service
+      - ./pom.xml:/app/pom.xml
+      - ./.env:/app/.env
+      - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
+    depends_on:
+      - discovery-server-service
+
   # MONGO
   product-service-mongo:
     container_name: product-service-mongo
