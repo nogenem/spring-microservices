@@ -21,7 +21,7 @@ public class FakeStoreInventoryRequestFactory {
     String sku = UUID.randomUUID().toString();
     return StoreInventoryRequest.builder()
         .sku(sku)
-        .quantity(faker.random().nextInt(100))
+        .quantity(faker.random().nextInt(1, 100))
         .build();
   }
 

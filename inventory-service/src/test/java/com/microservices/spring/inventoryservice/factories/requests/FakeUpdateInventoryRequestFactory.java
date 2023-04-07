@@ -18,7 +18,7 @@ public class FakeUpdateInventoryRequestFactory {
 
   public UpdateInventoryRequest createOne() {
     return UpdateInventoryRequest.builder()
-        .quantity(faker.random().nextInt(100))
+        .quantity(faker.random().nextInt(1, 100))
         .build();
   }
 

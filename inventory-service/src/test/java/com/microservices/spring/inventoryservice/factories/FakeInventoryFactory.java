@@ -21,7 +21,7 @@ public class FakeInventoryFactory {
     String sku = UUID.randomUUID().toString();
     return Inventory.builder()
         .sku(sku)
-        .quantity(faker.random().nextInt(100))
+        .quantity(faker.random().nextInt(1, 100))
         .build();
   }
 
