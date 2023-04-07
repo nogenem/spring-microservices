@@ -1,4 +1,4 @@
-package com.microservices.spring.inventoryservice.integration;
+package com.microservices.spring.inventoryservice.integration.inventory;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

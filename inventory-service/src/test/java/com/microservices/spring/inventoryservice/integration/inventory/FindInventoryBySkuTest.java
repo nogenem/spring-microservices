@@ -1,10 +1,9 @@
-package com.microservices.spring.inventoryservice.integration;
+package com.microservices.spring.inventoryservice.integration.inventory;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import com.microservices.spring.inventoryservice.InventoryRepository;
 import com.microservices.spring.inventoryservice.exceptions.InventoryWithThisSkuNotFoundException;
 import com.microservices.spring.inventoryservice.factories.FakeInventoryFactory;
 
-public class DeleteInventoryBySkuTest extends BaseIntegrationTest {
+public class FindInventoryBySkuTest extends BaseIntegrationTest {
 
   @Autowired
   private InventoryRepository inventoryRepository;
@@ -27,39 +26,35 @@ public class DeleteInventoryBySkuTest extends BaseIntegrationTest {
   private FakeInventoryFactory inventoryFactory;
 
   @Test
-  @DisplayName("Should be able to delete inventories by sku")
-  public void shouldBeAbleToDeleteInventoriesBySku() throws JsonProcessingException, Exception {
+  @DisplayName("Should be able to get inventories by sku")
+  public void shouldBeAbleToGetInventoriesBySku() throws JsonProcessingException, Exception {
     Inventory savedInventory = inventoryFactory.createOne();
     inventoryRepository.save(savedInventory);
 
-    ResultActions resultActions = mvc.perform(delete("/api/inventories/{sku}", savedInventory.getSku())
+    ResultActions resultActions = mvc.perform(get("/api/inventories/{sku}", savedInventory.getSku())
         .contentType(MediaType.APPLICATION_JSON));
 
     resultActions
         // .andDo(print())
-        .andExpect(status().isNoContent());
-
-    Boolean inventoryExists = inventoryRepository.existsById(savedInventory.getId());
-    Assertions.assertFalse(inventoryExists);
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(savedInventory.getId().toString()))
+        .andExpect(jsonPath("$.sku").value(savedInventory.getSku()));
   }
 
   @Test
-  @DisplayName("Should not be able to delete inventories with an invalid sku")
-  public void shouldNotBeAbleToDeleteInventoriesWithAnInvalidSku() throws JsonProcessingException, Exception {
+  @DisplayName("Should not be able to get inventories with an invalid sku")
+  public void shouldNotBeAbleToGetInventoriesWithAnInvalidSku() throws JsonProcessingException, Exception {
     Inventory savedInventory = inventoryFactory.createOne();
     inventoryRepository.save(savedInventory);
 
     String sku = savedInventory.getSku() + "_invalid";
-    ResultActions resultActions = mvc.perform(delete("/api/inventories/{sku}", sku)
+    ResultActions resultActions = mvc.perform(get("/api/inventories/{sku}", sku)
         .contentType(MediaType.APPLICATION_JSON));
 
     resultActions
         // .andDo(print())
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.code").value(InventoryWithThisSkuNotFoundException.CODE));
-
-    Boolean inventoryExists = inventoryRepository.existsById(savedInventory.getId());
-    Assertions.assertTrue(inventoryExists);
   }
 
 }
