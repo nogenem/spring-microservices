@@ -20,6 +20,7 @@
     <module>inventory-service-contracts</module>
     <module>order-service</module>
     <module>order-service-contracts</module>
+    <module>discovery-server-service</module>
   </modules>
 
   <groupId>com.microservices.spring</groupId>
@@ -37,6 +38,7 @@
     <testcontainers.version>1.17.6</testcontainers.version>
     <javafaker.version>1.0.2</javafaker.version>
     <springdoc-openapi.version>2.1.0</springdoc-openapi.version>
+    <spring-cloud.version>2022.0.2</spring-cloud.version>
   </properties>
 
   <dependencyManagement>
@@ -62,6 +64,13 @@
         <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>com.github.slugify</groupId>
         <artifactId>slugify</artifactId>
@@ -191,4 +200,15 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <repositories>
+    <repository>
+      <id>netflix-candidates</id>
+      <name>Netflix Candidates</name>
+      <url>https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

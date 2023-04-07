@@ -38,8 +38,6 @@ public abstract class BaseIntegrationTest {
     postgresDBContainer.start();
 
     registry.add("spring.datasource.driver-class-name", postgresDBContainer::getDriverClassName);
-    registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
-    registry.add("spring.jpa.show-sql", () -> "false");
     registry.add("spring.datasource.url", postgresDBContainer::getJdbcUrl);
     registry.add("spring.datasource.username", postgresDBContainer::getUsername);
     registry.add("spring.datasource.password", postgresDBContainer::getPassword);

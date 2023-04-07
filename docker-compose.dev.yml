@@ -26,6 +26,7 @@ services:
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
       - product-service-mongo
+      - discovery-server-service
 
   inventory-service:
     container_name: inventory-service
@@ -50,6 +51,7 @@ services:
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
       - inventory-service-postgres
+      - discovery-server-service
 
   order-service:
     container_name: order-service
@@ -74,6 +76,27 @@ services:
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
       - order-service-postgres
+      - discovery-server-service
+
+  discovery-server-service:
+    container_name: discovery-server-service
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+      args:
+        username: ${DOCKER_IMAGES_OS_USERNAME}
+        useruid: ${DOCKER_IMAGES_OS_USERUID}
+        usergid: ${DOCKER_IMAGES_OS_USERGID}
+        service_folder_name: discovery-server-service
+    ports:
+      - ${DISCOVERY_SERVER_SERVICE_PORT}:${DISCOVERY_SERVER_SERVICE_PORT} # App
+      - ${DISCOVERY_SERVER_SERVICE_DEBUGGER_PORT}:5005 # Debugger
+      - ${DISCOVERY_SERVER_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
+    volumes:
+      - ./discovery-server-service:/app/discovery-server-service
+      - ./pom.xml:/app/pom.xml
+      - ./.env:/app/.env
+      - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
 
   # MONGO
   product-service-mongo:
