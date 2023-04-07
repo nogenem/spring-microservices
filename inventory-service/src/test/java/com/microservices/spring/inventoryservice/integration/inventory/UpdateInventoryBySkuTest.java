@@ -21,7 +21,7 @@ import com.microservices.spring.inventoryservice.InventoryRepository;
 import com.microservices.spring.inventoryservice.exceptions.InventoryWithThisSkuNotFoundException;
 import com.microservices.spring.inventoryservice.factories.FakeInventoryFactory;
 import com.microservices.spring.inventoryservice.factories.requests.FakeUpdateInventoryRequestFactory;
-import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.requests.UpdateInventoryRequest;
 
 public class UpdateInventoryBySkuTest extends BaseIntegrationTest {
 

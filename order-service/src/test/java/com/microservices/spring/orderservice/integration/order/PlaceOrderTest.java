@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.microservices.spring.common.exceptions.ValidationErrorsException;
 import com.microservices.spring.orderservice.BaseIntegrationTest;
 import com.microservices.spring.orderservice.factories.requests.FakePlaceOrderRequestFactory;
-import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
+import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
 
 public class PlaceOrderTest extends BaseIntegrationTest {
 

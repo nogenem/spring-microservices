@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.github.slugify.Slugify;
 import com.microservices.spring.productservice.exceptions.ProductWithThisSkuNotFoundException;
-import com.microservices.spring.productservice.requests.StoreProductRequest;
-import com.microservices.spring.productservice.requests.UpdateProductRequest;
+import com.microservices.spring.productservicecontracts.requests.StoreProductRequest;
+import com.microservices.spring.productservicecontracts.requests.UpdateProductRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

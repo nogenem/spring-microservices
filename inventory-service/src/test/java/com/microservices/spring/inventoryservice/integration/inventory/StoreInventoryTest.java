@@ -18,7 +18,7 @@ import com.microservices.spring.inventoryservice.Inventory;
 import com.microservices.spring.inventoryservice.InventoryRepository;
 import com.microservices.spring.inventoryservice.factories.FakeInventoryFactory;
 import com.microservices.spring.inventoryservice.factories.requests.FakeStoreInventoryRequestFactory;
-import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.requests.StoreInventoryRequest;
 
 public class StoreInventoryTest extends BaseIntegrationTest {
 

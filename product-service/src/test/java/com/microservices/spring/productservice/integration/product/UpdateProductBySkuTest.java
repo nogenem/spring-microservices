@@ -21,7 +21,7 @@ import com.microservices.spring.productservice.ProductRepository;
 import com.microservices.spring.productservice.exceptions.ProductWithThisSkuNotFoundException;
 import com.microservices.spring.productservice.factories.FakeProductFactory;
 import com.microservices.spring.productservice.factories.requests.FakeUpdateProductRequestFactory;
-import com.microservices.spring.productservice.requests.UpdateProductRequest;
+import com.microservices.spring.productservicecontracts.requests.UpdateProductRequest;
 
 public class UpdateProductBySkuTest extends BaseIntegrationTest {
 

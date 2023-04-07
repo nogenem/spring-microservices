@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.microservices.spring.inventoryservice.exceptions.InventoryWithThisSkuNotFoundException;
-import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
-import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.requests.StoreInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.requests.UpdateInventoryRequest;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

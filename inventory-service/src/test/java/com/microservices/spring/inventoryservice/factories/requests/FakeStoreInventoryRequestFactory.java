@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
-import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.requests.StoreInventoryRequest;
 
 import lombok.AllArgsConstructor;
 

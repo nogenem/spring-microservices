@@ -8,9 +8,9 @@ import org.springframework.data.domain.Page;
 import com.microservices.spring.common.exceptions.ApiException;
 import com.microservices.spring.common.responses.ExceptionResponse;
 import com.microservices.spring.common.responses.PagedEntityResponse;
-import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
-import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
-import com.microservices.spring.inventoryservice.responses.InventoryResponse;
+import com.microservices.spring.inventoryservicecontracts.requests.StoreInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.requests.UpdateInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.responses.InventoryResponse;
 
 @Mapper(componentModel = "spring")
 public interface MapStructMapper {

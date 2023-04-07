@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
-import com.microservices.spring.orderservice.requests.PlaceOrderLineItemRequest;
+import com.microservices.spring.orderservicecontracts.requests.PlaceOrderLineItemRequest;
 
 import lombok.AllArgsConstructor;
 

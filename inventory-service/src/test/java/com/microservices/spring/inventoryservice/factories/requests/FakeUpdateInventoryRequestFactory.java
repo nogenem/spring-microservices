@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
-import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.requests.UpdateInventoryRequest;
 
 import lombok.AllArgsConstructor;
 

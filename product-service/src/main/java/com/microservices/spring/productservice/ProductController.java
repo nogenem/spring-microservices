@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microservices.spring.common.responses.PagedEntityResponse;
-import com.microservices.spring.productservice.requests.StoreProductRequest;
-import com.microservices.spring.productservice.requests.UpdateProductRequest;
-import com.microservices.spring.productservice.responses.ProductResponse;
+import com.microservices.spring.productservicecontracts.requests.StoreProductRequest;
+import com.microservices.spring.productservicecontracts.requests.UpdateProductRequest;
+import com.microservices.spring.productservicecontracts.responses.ProductResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

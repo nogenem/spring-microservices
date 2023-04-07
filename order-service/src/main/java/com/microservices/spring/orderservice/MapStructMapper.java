@@ -9,9 +9,9 @@ import com.microservices.spring.common.responses.ExceptionResponse;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.orderservice.models.Order;
 import com.microservices.spring.orderservice.models.OrderLineItem;
-import com.microservices.spring.orderservice.requests.PlaceOrderLineItemRequest;
-import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
-import com.microservices.spring.orderservice.responses.OrderResponse;
+import com.microservices.spring.orderservicecontracts.requests.PlaceOrderLineItemRequest;
+import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
+import com.microservices.spring.orderservicecontracts.responses.OrderResponse;
 
 @Mapper(componentModel = "spring")
 public interface MapStructMapper {

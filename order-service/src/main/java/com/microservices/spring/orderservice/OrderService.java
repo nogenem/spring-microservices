@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.microservices.spring.orderservice.exceptions.OrderWithThisOrderNumberNotFoundException;
 import com.microservices.spring.orderservice.models.Order;
-import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
+import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

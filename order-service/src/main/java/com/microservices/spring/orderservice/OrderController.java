@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.orderservice.exceptions.InvalidOrderNumberException;
 import com.microservices.spring.orderservice.models.Order;
-import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
-import com.microservices.spring.orderservice.responses.OrderResponse;
+import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
+import com.microservices.spring.orderservicecontracts.responses.OrderResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

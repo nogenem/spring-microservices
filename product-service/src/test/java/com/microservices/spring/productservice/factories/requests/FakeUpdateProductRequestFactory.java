@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
 import com.github.slugify.Slugify;
-import com.microservices.spring.productservice.requests.UpdateProductRequest;
+import com.microservices.spring.productservicecontracts.requests.UpdateProductRequest;
 
 import lombok.AllArgsConstructor;
 

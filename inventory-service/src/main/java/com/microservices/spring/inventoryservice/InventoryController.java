@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microservices.spring.common.responses.PagedEntityResponse;
-import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
-import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
-import com.microservices.spring.inventoryservice.responses.InventoryResponse;
+import com.microservices.spring.inventoryservicecontracts.requests.StoreInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.requests.UpdateInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.responses.InventoryResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

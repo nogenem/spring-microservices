@@ -18,7 +18,7 @@ import com.microservices.spring.productservice.Product;
 import com.microservices.spring.productservice.ProductRepository;
 import com.microservices.spring.productservice.factories.FakeProductFactory;
 import com.microservices.spring.productservice.factories.requests.FakeStoreProductRequestFactory;
-import com.microservices.spring.productservice.requests.StoreProductRequest;
+import com.microservices.spring.productservicecontracts.requests.StoreProductRequest;
 
 public class StoreProductTest extends BaseIntegrationTest {
 

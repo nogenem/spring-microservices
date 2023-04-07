@@ -19,6 +19,7 @@ services:
       - ${PRODUCT_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./product-service:/app/product-service
+      - ./product-service-contracts:/app/product-service-contracts
       - ./common:/app/common
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env
@@ -42,6 +43,7 @@ services:
       - ${INVENTORY_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./inventory-service:/app/inventory-service
+      - ./inventory-service-contracts:/app/inventory-service-contracts
       - ./common:/app/common
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env
@@ -65,6 +67,7 @@ services:
       - ${ORDER_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./order-service:/app/order-service
+      - ./order-service-contracts:/app/order-service-contracts
       - ./common:/app/common
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env

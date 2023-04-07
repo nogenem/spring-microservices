@@ -15,8 +15,11 @@
   <modules>
     <module>common</module>
     <module>product-service</module>
+    <module>product-service-contracts</module>
     <module>inventory-service</module>
+    <module>inventory-service-contracts</module>
     <module>order-service</module>
+    <module>order-service-contracts</module>
   </modules>
 
   <groupId>com.microservices.spring</groupId>
@@ -41,6 +44,21 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>product-service-contracts</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>inventory-service-contracts</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>order-service-contracts</artifactId>
         <version>${project.version}</version>
       </dependency>
 

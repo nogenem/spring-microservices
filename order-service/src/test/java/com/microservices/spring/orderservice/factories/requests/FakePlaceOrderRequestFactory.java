@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
+import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
 
 import lombok.AllArgsConstructor;
 
