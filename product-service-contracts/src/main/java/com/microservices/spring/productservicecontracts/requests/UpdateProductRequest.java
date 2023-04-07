@@ -23,6 +23,6 @@ public class UpdateProductRequest {
 
   @NotNull
   @Min(value = 1)
-  private Long price;
+  private Integer price;
 
 }

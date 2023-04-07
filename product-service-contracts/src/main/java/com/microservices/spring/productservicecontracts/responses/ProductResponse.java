@@ -18,7 +18,7 @@ public class ProductResponse implements IEntityResponse {
   private String slug;
   private String name;
   private String description;
-  private Long price;
+  private Integer price;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 

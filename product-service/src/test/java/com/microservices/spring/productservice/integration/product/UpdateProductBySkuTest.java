@@ -171,7 +171,7 @@ public class UpdateProductBySkuTest extends BaseIntegrationTest {
     UpdateProductRequest request = UpdateProductRequest.builder()
         .slug("so")
         .name("So")
-        .price(0L)
+        .price(0)
         .build();
 
     ResultActions resultActions = mvc.perform(put("/api/products/{sku}", savedProduct.getSku())

@@ -25,7 +25,7 @@ public class FakeUpdateProductRequestFactory {
         .slug(slug)
         .name(name)
         .description(faker.lorem().sentence(1))
-        .price(faker.random().nextLong(2500))
+        .price(faker.random().nextInt(1000, 2000))
         .build();
   }
 

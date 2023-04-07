@@ -139,7 +139,7 @@ public class StoreProductTest extends BaseIntegrationTest {
     StoreProductRequest request = StoreProductRequest.builder()
         .slug("so")
         .name("So")
-        .price(0L)
+        .price(0)
         .build();
 
     ResultActions resultActions = mvc.perform(post("/api/products")

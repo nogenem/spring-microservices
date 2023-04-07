@@ -29,6 +29,6 @@ public class StoreProductRequest {
 
   @NotNull
   @Min(value = 1)
-  private Long price;
+  private Integer price;
 
 }

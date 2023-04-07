@@ -39,7 +39,7 @@ public class Product {
   private String description;
 
   @NonNull
-  private Long price;
+  private Integer price;
 
   @CreatedDate
   private LocalDateTime createdAt;
