@@ -7,9 +7,9 @@ import org.springframework.data.domain.Page;
 
 import com.microservices.spring.common.exceptions.ApiException;
 import com.microservices.spring.common.responses.ExceptionResponse;
+import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.productservice.requests.StoreProductRequest;
 import com.microservices.spring.productservice.requests.UpdateProductRequest;
-import com.microservices.spring.productservice.responses.PagedProductsResponse;
 import com.microservices.spring.productservice.responses.ProductResponse;
 
 @Mapper(componentModel = "spring")
@@ -24,7 +24,7 @@ public interface MapStructMapper {
 
   @Mapping(target = "page", source = "number")
   @Mapping(target = "content", source = "content", defaultExpression = "java(new java.util.ArrayList<>())")
-  PagedProductsResponse pagedProductsToPagedProductsResponse(Page<Product> pagedProducts);
+  PagedEntityResponse<ProductResponse> pagedProductsToPagedProductsResponse(Page<Product> pagedProducts);
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "sku", ignore = true)

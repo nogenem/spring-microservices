@@ -7,21 +7,24 @@ import org.springframework.data.domain.Page;
 
 import com.microservices.spring.common.exceptions.ApiException;
 import com.microservices.spring.common.responses.ExceptionResponse;
+import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
 import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
 import com.microservices.spring.inventoryservice.responses.InventoryResponse;
-import com.microservices.spring.inventoryservice.responses.PagedInventoryResponse;
 
 @Mapper(componentModel = "spring")
 public interface MapStructMapper {
 
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "updatedAt", ignore = true)
   Inventory storeInventoryRequestToInventory(StoreInventoryRequest inventoryRequest);
 
   InventoryResponse inventoryToInventoryResponse(Inventory inventory);
 
   @Mapping(target = "page", source = "number")
   @Mapping(target = "content", source = "content", defaultExpression = "java(new java.util.ArrayList<>())")
-  PagedInventoryResponse pagedInventoryToPagedInventoryResponse(Page<Inventory> pagedInventory);
+  PagedEntityResponse<InventoryResponse> pagedInventoryToPagedInventoryResponse(Page<Inventory> pagedInventory);
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "sku", ignore = true)

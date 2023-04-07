@@ -1,4 +1,4 @@
-package com.microservices.spring.orderservice.responses;
+package com.microservices.spring.common.responses;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class PagedOrderResponse {
+public class PagedEntityResponse<R extends IEntityResponse> {
 
-  private List<OrderResponse> content;
+  private List<R> content;
   private int totalElements;
   private int totalPages;
   private int page;

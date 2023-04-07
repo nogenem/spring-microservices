@@ -3,6 +3,8 @@ package com.microservices.spring.inventoryservice.responses;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.microservices.spring.common.responses.IEntityResponse;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +12,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class InventoryResponse {
+public class InventoryResponse implements IEntityResponse {
 
   private UUID id;
   private String sku;

@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.orderservice.exceptions.InvalidOrderNumberException;
 import com.microservices.spring.orderservice.models.Order;
 import com.microservices.spring.orderservice.requests.PlaceOrderRequest;
 import com.microservices.spring.orderservice.responses.OrderResponse;
-import com.microservices.spring.orderservice.responses.PagedOrderResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -60,7 +60,7 @@ public class OrderController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "A page of orders"),
       @ApiResponse(responseCode = "422", description = "Validation errors", content = @Content) })
-  public PagedOrderResponse findAllOrdersPaged(
+  public PagedEntityResponse<OrderResponse> findAllOrdersPaged(
       @RequestParam(defaultValue = "0") @Min(value = 0) int page,
       @RequestParam(defaultValue = "30") @Min(value = 5) int size,
       @RequestParam(defaultValue = "-createdAt") String sort) {

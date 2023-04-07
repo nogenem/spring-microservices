@@ -122,6 +122,9 @@
               <version>${mapstruct.version}</version>
             </path>
           </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-Amapstruct.disableBuilders=true</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>

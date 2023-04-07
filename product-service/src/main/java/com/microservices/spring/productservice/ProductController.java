@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.productservice.requests.StoreProductRequest;
 import com.microservices.spring.productservice.requests.UpdateProductRequest;
-import com.microservices.spring.productservice.responses.PagedProductsResponse;
 import com.microservices.spring.productservice.responses.ProductResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +59,7 @@ public class ProductController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "A page of products"),
       @ApiResponse(responseCode = "422", description = "Validation errors", content = @Content) })
-  public PagedProductsResponse findAllProductsPaged(
+  public PagedEntityResponse<ProductResponse> findAllProductsPaged(
       @RequestParam(defaultValue = "0") @Min(value = 0) int page,
       @RequestParam(defaultValue = "30") @Min(value = 5) int size,
       @RequestParam(defaultValue = "-createdAt") String sort) {

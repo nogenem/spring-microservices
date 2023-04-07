@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.inventoryservice.requests.StoreInventoryRequest;
 import com.microservices.spring.inventoryservice.requests.UpdateInventoryRequest;
 import com.microservices.spring.inventoryservice.responses.InventoryResponse;
-import com.microservices.spring.inventoryservice.responses.PagedInventoryResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,7 +59,7 @@ public class InventoryController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "A page of inventories"),
       @ApiResponse(responseCode = "422", description = "Validation errors", content = @Content) })
-  public PagedInventoryResponse findAllInventoriesPaged(
+  public PagedEntityResponse<InventoryResponse> findAllInventoriesPaged(
       @RequestParam(defaultValue = "0") @Min(value = 0) int page,
       @RequestParam(defaultValue = "30") @Min(value = 5) int size,
       @RequestParam(defaultValue = "-createdAt") String sort) {
