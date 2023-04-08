@@ -9,7 +9,43 @@
       "name": "Debug product-service remotely",
       "request": "attach",
       "hostName": "localhost",
-      "port": "8096" // Comes from the .env file
+      // Comes from the .env file, can be any port in the range MIN and MAX
+      // Will have to get the currently used port from Docker
+      "port": "8222"
+    },
+    {
+      "type": "java",
+      "name": "Debug inventory-service remotely",
+      "request": "attach",
+      "hostName": "localhost",
+      // Comes from the .env file, can be any port in the range MIN and MAX
+      // Will have to get the currently used port from Docker
+      "port": "8322"
+    },
+    {
+      "type": "java",
+      "name": "Debug order-service remotely",
+      "request": "attach",
+      "hostName": "localhost",
+      // Comes from the .env file, can be any port in the range MIN and MAX
+      // Will have to get the currently used port from Docker
+      "port": "8422"
+    },
+    {
+      "type": "java",
+      "name": "Debug discovery-server-service remotely",
+      "request": "attach",
+      "hostName": "localhost",
+      // Comes from the .env file
+      "port": "8196"
+    },
+    {
+      "type": "java",
+      "name": "Debug api-gateway-service remotely",
+      "request": "attach",
+      "hostName": "localhost",
+      // Comes from the .env file
+      "port": "8096"
     }
   ]
 }
