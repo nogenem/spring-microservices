@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "com.microservices.spring.orderservice",
+		"com.microservices.spring.common" })
 @EnableJpaAuditing
 @OpenAPIDefinition
 public class OrderServiceApplication {

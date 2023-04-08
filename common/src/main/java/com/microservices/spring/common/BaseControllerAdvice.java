@@ -1,9 +1,11 @@
-package com.microservices.spring.productservice;
+package com.microservices.spring.common;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -25,17 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalControllerAdvice {
+public class BaseControllerAdvice {
 
   @Value("${responses.exceptions.return-stack-trace:false}")
   private Boolean returnStackTrace;
 
-  private final MapStructMapper mapStructMapper;
-
-  // PS: Can't use `@AllArgsConstructor` cause of the `@Value`
-  public GlobalControllerAdvice(MapStructMapper mapStructMapper) {
-    this.mapStructMapper = mapStructMapper;
-  }
+  @Autowired
+  private CommonMapper mapper;
 
   @ExceptionHandler({ ApiException.class })
   @ResponseBody
@@ -108,6 +106,23 @@ public class GlobalControllerAdvice {
     return buildExceptionResponse(apiException, baseException);
   }
 
+  @ExceptionHandler({ DataIntegrityViolationException.class })
+  @ResponseBody
+  public ResponseEntity<ExceptionResponse> onDataIntegrityViolationException(
+      DataIntegrityViolationException baseException) {
+    String errorMessage = baseException.getMostSpecificCause().getMessage();
+
+    if (errorMessage.contains("duplicate key value violates unique constraint")) {
+      return handlePostgresDuplicateKeyException(baseException);
+    }
+
+    log.error("Unrecognizable DataIntegrityViolationException: " + errorMessage, baseException);
+
+    InternalServerErrorException apiException = new InternalServerErrorException();
+
+    return buildExceptionResponse(apiException, baseException);
+  }
+
   @ExceptionHandler({ Exception.class })
   @ResponseBody
   public ResponseEntity<ExceptionResponse> onException(Exception baseException) {
@@ -118,15 +133,44 @@ public class GlobalControllerAdvice {
     return buildExceptionResponse(apiException, baseException);
   }
 
-  private ResponseEntity<ExceptionResponse> buildExceptionResponse(ApiException apiException,
+  protected ResponseEntity<ExceptionResponse> buildExceptionResponse(ApiException apiException,
       Exception baseException) {
-    ExceptionResponse response = mapStructMapper.apiExceptionToExceptionResponse(apiException);
+    ExceptionResponse response = mapper.apiExceptionToExceptionResponse(apiException);
 
     if (returnStackTrace) {
       response.setStackTrace(baseException);
     }
 
     return ResponseEntity.status(response.getStatus()).body(response);
+  }
+
+  protected ResponseEntity<ExceptionResponse> handlePostgresDuplicateKeyException(
+      DataIntegrityViolationException baseException) {
+    String errorMessage = baseException.getMostSpecificCause().getMessage();
+
+    // Detail: Key (sku)=(XXXXX) already exists.
+    Pattern pattern = Pattern.compile("Detail: Key \\((.*?)\\)=\\((.*?)\\)");
+    Matcher matcher = pattern.matcher(errorMessage);
+
+    String key = null;
+    if (matcher.find()) {
+      key = matcher.group(1);
+    }
+
+    if (key == null || key.isEmpty()) {
+      log.error("Couldn't extract the key value from DataIntegrityViolationException", baseException);
+
+      InternalServerErrorException apiException = new InternalServerErrorException();
+
+      return buildExceptionResponse(apiException, baseException);
+    }
+
+    ValidationErrorsMap errors = new ValidationErrorsMap();
+    errors.put(key, "must be unique");
+
+    ValidationErrorsException apiException = new ValidationErrorsException(errors);
+
+    return buildExceptionResponse(apiException, baseException);
   }
 
 }

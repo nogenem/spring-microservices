@@ -6,7 +6,8 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "com.microservices.spring.productservice",
+		"com.microservices.spring.common" })
 @EnableMongoAuditing
 @OpenAPIDefinition
 public class ProductServiceApplication {

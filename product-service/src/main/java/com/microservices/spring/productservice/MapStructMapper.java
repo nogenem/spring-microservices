@@ -5,8 +5,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 
-import com.microservices.spring.common.exceptions.ApiException;
-import com.microservices.spring.common.responses.ExceptionResponse;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.productservicecontracts.requests.StoreProductRequest;
 import com.microservices.spring.productservicecontracts.requests.UpdateProductRequest;
@@ -31,8 +29,5 @@ public interface MapStructMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   void updateProductFromUpdateProductRequest(UpdateProductRequest updateProductRequest, @MappingTarget Product product);
-
-  @Mapping(target = "stackTrace", ignore = true)
-  ExceptionResponse apiExceptionToExceptionResponse(ApiException apiException);
 
 }

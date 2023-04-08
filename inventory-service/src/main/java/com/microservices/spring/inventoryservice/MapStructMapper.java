@@ -5,8 +5,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 
-import com.microservices.spring.common.exceptions.ApiException;
-import com.microservices.spring.common.responses.ExceptionResponse;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.inventoryservicecontracts.requests.StoreInventoryRequest;
 import com.microservices.spring.inventoryservicecontracts.requests.UpdateInventoryRequest;
@@ -32,8 +30,5 @@ public interface MapStructMapper {
   @Mapping(target = "updatedAt", ignore = true)
   void updateInventoryFromUpdateInventoryRequest(UpdateInventoryRequest request,
       @MappingTarget Inventory inventory);
-
-  @Mapping(target = "stackTrace", ignore = true)
-  ExceptionResponse apiExceptionToExceptionResponse(ApiException apiException);
 
 }
