@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microservices.spring.authservice.models.User;
+import com.microservices.spring.authservicecontracts.requests.SigninRequest;
 import com.microservices.spring.authservicecontracts.requests.SignupRequest;
+import com.microservices.spring.authservicecontracts.responses.TokenResponse;
 import com.microservices.spring.authservicecontracts.responses.UserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +42,18 @@ public class AuthController {
     User user = authService.signup(request);
 
     return mapStructMapper.userToUserResponse(user);
+  }
+
+  @PostMapping("/signin")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(summary = "Sign an user in")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Token for signed in user"),
+      @ApiResponse(responseCode = "422", description = "Validation errors", content = @Content) })
+  public TokenResponse signin(@Valid @RequestBody SigninRequest request) {
+    String token = authService.signin(request);
+
+    return new TokenResponse(token);
   }
 
 }
