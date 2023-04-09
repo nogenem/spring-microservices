@@ -117,6 +117,7 @@ services:
       - ${API_GATEWAY_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./api-gateway-service:/app/api-gateway-service
+      - ./common:/app/common
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2

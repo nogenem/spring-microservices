@@ -22,7 +22,7 @@ public class ExceptionResponse {
   private String code;
   private String message;
   private ValidationErrorsMap errors;
-  private Exception stackTrace;
+  private Throwable stackTrace;
 
   public String getStackTrace() {
     if (this.stackTrace == null) {
