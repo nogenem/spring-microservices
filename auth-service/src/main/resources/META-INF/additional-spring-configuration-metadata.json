@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "responses.exceptions.return-stack-trace",
+      "type": "java.lang.Boolean",
+      "description": "Enables or disables the return of the exception stack trace by the API"
+    }
+  ]
+}

@@ -81,6 +81,32 @@ services:
       - order-service-postgres
       - discovery-server-service
 
+  auth-service:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+      args:
+        username: ${DOCKER_IMAGES_OS_USERNAME}
+        useruid: ${DOCKER_IMAGES_OS_USERUID}
+        usergid: ${DOCKER_IMAGES_OS_USERGID}
+        service_folder_name: auth-service
+    deploy:
+      replicas: ${AUTH_SERVICE_NUM_OF_REPLICAS}
+    ports:
+      - ${AUTH_SERVICE_HOST_MIN_PORT}-${AUTH_SERVICE_HOST_MAX_PORT}:${AUTH_SERVICE_CONTAINER_PORT} # App
+      - ${AUTH_SERVICE_DEBUGGER_HOST_MIN_PORT}-${AUTH_SERVICE_DEBUGGER_HOST_MAX_PORT}:5005 # Debugger
+      - ${AUTH_SERVICE_LIVE_RELOAD_HOST_MIN_PORT}-${AUTH_SERVICE_LIVE_RELOAD_HOST_MAX_PORT}:35729 # Livereload
+    volumes:
+      - ./auth-service:/app/auth-service
+      - ./auth-service-contracts:/app/auth-service-contracts
+      - ./common:/app/common
+      - ./pom.xml:/app/pom.xml
+      - ./.env:/app/.env
+      - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
+    depends_on:
+      - auth-service-postgres
+      - discovery-server-service
+
   discovery-server-service:
     container_name: discovery-server-service
     build:
@@ -188,6 +214,24 @@ services:
       POSTGRES_USER: ${ORDER_SERVICE_POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${ORDER_SERVICE_POSTGRES_PASSWORD}
       PGPORT: ${ORDER_SERVICE_POSTGRES_PORT}
+      PGDATA: /data/postgres
+
+  auth-service-postgres:
+    container_name: auth-service-postgres
+    image: postgres:15.2
+    command: -p ${AUTH_SERVICE_POSTGRES_PORT}
+    restart: always
+    ports:
+      - ${AUTH_SERVICE_POSTGRES_PORT}:${AUTH_SERVICE_POSTGRES_PORT}
+    expose:
+      - ${AUTH_SERVICE_POSTGRES_PORT}
+    volumes:
+      - ./_databases/auth-service-postgres-data:/data/postgres:rw
+    environment:
+      POSTGRES_DB: ${AUTH_SERVICE_POSTGRES_DATABASE}
+      POSTGRES_USER: ${AUTH_SERVICE_POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${AUTH_SERVICE_POSTGRES_PASSWORD}
+      PGPORT: ${AUTH_SERVICE_POSTGRES_PORT}
       PGDATA: /data/postgres
 
   postgres-adminer:

@@ -22,6 +22,8 @@
     <module>order-service-contracts</module>
     <module>discovery-server-service</module>
     <module>api-gateway-service</module>
+    <module>auth-service</module>
+    <module>auth-service-contracts</module>
   </modules>
 
   <groupId>com.microservices.spring</groupId>
@@ -62,6 +64,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>order-service-contracts</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>auth-service-contracts</artifactId>
         <version>${project.version}</version>
       </dependency>
 

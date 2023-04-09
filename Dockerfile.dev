@@ -29,6 +29,8 @@ COPY --chown=$username:$username ./product-service/pom.xml ./product-service/
 COPY --chown=$username:$username ./product-service-contracts/pom.xml ./product-service-contracts/
 COPY --chown=$username:$username ./order-service/pom.xml ./order-service/
 COPY --chown=$username:$username ./order-service-contracts/pom.xml ./order-service-contracts/
+COPY --chown=$username:$username ./auth-service/pom.xml ./auth-service/
+COPY --chown=$username:$username ./auth-service-contracts/pom.xml ./auth-service-contracts/
 COPY --chown=$username:$username ./discovery-server-service/pom.xml ./discovery-server-service/
 COPY --chown=$username:$username ./api-gateway-service/pom.xml ./api-gateway-service/
 
