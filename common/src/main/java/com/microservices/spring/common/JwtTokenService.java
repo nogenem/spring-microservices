@@ -19,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtTokenService {
 
-  // 2 hours
-  private static final int EXPIRES_IN = 2 * 60 * 60 * 1000;
   private static final String TOKEN_CLAIM_KEY = "id";
 
   @Value("${jwt-token.secret}")
@@ -28,6 +26,9 @@ public class JwtTokenService {
 
   @Value("${jwt-token.issuer}")
   private String issuer;
+
+  @Value("${jwt-token.expires-in-minutes:120}")
+  private Integer expiresInMinutes;
 
   public String generateToken(String userId, Boolean tokenExpires) {
     Algorithm algorithmHS = Algorithm.HMAC256(secret);
@@ -39,7 +40,8 @@ public class JwtTokenService {
         .withIssuedAt(now);
 
     if (tokenExpires) {
-      builder.withExpiresAt(new Date(now.getTime() + EXPIRES_IN));
+      int expiresInMS = expiresInMinutes * 60 * 1000;
+      builder.withExpiresAt(new Date(now.getTime() + expiresInMS));
     }
 
     return builder.sign(algorithmHS);
