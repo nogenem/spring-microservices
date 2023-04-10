@@ -66,7 +66,7 @@ public class JwtTokenService {
   }
 
   public Optional<String> getUserIdFromToken(String token) {
-    if (token == null) {
+    if (token == null || token.isEmpty()) {
       return Optional.empty();
     }
 
@@ -77,9 +77,28 @@ public class JwtTokenService {
           .build();
       DecodedJWT jwt = verifier.verify(token);
 
-      return Optional.of(jwt.getClaim(TOKEN_CLAIM_KEY).asString());
+      return Optional.ofNullable(jwt.getClaim(TOKEN_CLAIM_KEY).asString());
     } catch (JWTVerificationException exception) {
       log.info("Error while trying to extract `" + TOKEN_CLAIM_KEY + "` from token: " + exception.getMessage());
+      return Optional.empty();
+    }
+  }
+
+  public Optional<Date> getExpiresAtFromToken(String token) {
+    if (token == null || token.isEmpty()) {
+      return Optional.empty();
+    }
+
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(secret);
+      JWTVerifier verifier = JWT.require(algorithm)
+          .withIssuer(issuer)
+          .build();
+      DecodedJWT jwt = verifier.verify(token);
+
+      return Optional.ofNullable(jwt.getExpiresAt());
+    } catch (JWTVerificationException exception) {
+      log.info("Error while trying to extract `expiresAt` from token: " + exception.getMessage());
       return Optional.empty();
     }
   }
