@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.microservices.spring.common.exceptions.ApiException;
 import com.microservices.spring.common.responses.ExceptionResponse;
 
 import reactor.core.publisher.Mono;
@@ -74,16 +75,32 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
   }
 
   private HttpStatus determineHttpStatus(Throwable error) {
-    return error instanceof ResponseStatusException err ? HttpStatus.valueOf(err.getStatusCode().value())
-        : MergedAnnotations.from(error.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY)
-            .get(ResponseStatus.class).getValue("code", HttpStatus.class)
-            .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+    HttpStatus status = null;
+
+    if (error instanceof ResponseStatusException err) {
+      status = HttpStatus.valueOf(err.getStatusCode().value());
+    } else if (error instanceof ApiException err) {
+      status = HttpStatus.valueOf(err.getStatus());
+    } else {
+      status = MergedAnnotations.from(error.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY)
+          .get(ResponseStatus.class).getValue("code", HttpStatus.class)
+          .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return status;
   }
 
   private String determineMessage(Throwable error) {
-    return error instanceof ResponseStatusException err
-        ? err.getBody().getTitle()
-        : error.getMessage();
+    String message = error.getMessage();
+
+    if (error instanceof ResponseStatusException err) {
+      message = err.getReason();
+      if (message == null || message.isEmpty()) {
+        message = err.getBody().getTitle();
+      }
+    }
+
+    return message;
   }
 
 }
