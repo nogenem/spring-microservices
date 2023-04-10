@@ -4,6 +4,31 @@
       "name": "responses.exceptions.return-stack-trace",
       "type": "java.lang.Boolean",
       "description": "Enables or disables the return of the exception stack trace by the API"
+    },
+    {
+      "name": "product-service.uri",
+      "type": "java.lang.String",
+      "description": "Uri of the product-service"
+    },
+    {
+      "name": "inventory-service.uri",
+      "type": "java.lang.String",
+      "description": "Uri of the inventory-service"
+    },
+    {
+      "name": "order-service.uri",
+      "type": "java.lang.String",
+      "description": "Uri of the order-service"
+    },
+    {
+      "name": "auth-service.uri",
+      "type": "java.lang.String",
+      "description": "Uri of the auth-service"
+    },
+    {
+      "name": "discovery-server-service.uri",
+      "type": "java.lang.String",
+      "description": "Uri of the discovery-server-service"
     }
   ]
 }

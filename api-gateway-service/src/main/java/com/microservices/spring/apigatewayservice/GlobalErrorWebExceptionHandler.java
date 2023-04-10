@@ -53,6 +53,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     Throwable error = getError(request);
 
     HttpStatus status = determineHttpStatus(error);
+    String code = determineCode(error);
     String message = determineMessage(error);
 
     if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
@@ -61,7 +62,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
     ExceptionResponse response = ExceptionResponse.builder()
         .status(status.value())
-        .code(CODE)
+        .code(code)
         .message(message)
         .build();
 
@@ -88,6 +89,16 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     }
 
     return status;
+  }
+
+  private String determineCode(Throwable error) {
+    String code = CODE;
+
+    if (error instanceof ApiException err) {
+      code = err.getCode();
+    }
+
+    return code;
   }
 
   private String determineMessage(Throwable error) {
