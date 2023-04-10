@@ -22,13 +22,13 @@ public class FakePlaceOrderRequestFactory {
   }
 
   public List<PlaceOrderRequest> createMany(int nOrderRequests, int nLineItemRequests) {
-    List<PlaceOrderRequest> lineItems = new ArrayList<>();
+    List<PlaceOrderRequest> requests = new ArrayList<>();
 
     for (int i = 0; i < nOrderRequests; i++) {
-      lineItems.add(createOne(nLineItemRequests));
+      requests.add(createOne(nLineItemRequests));
     }
 
-    return lineItems;
+    return requests;
   }
 
 }

@@ -23,7 +23,7 @@ import com.microservices.spring.productservicecontracts.requests.StoreProductReq
 public class StoreProductTest extends BaseIntegrationTest {
 
   @Autowired
-  ProductRepository productRepository;
+  private ProductRepository productRepository;
 
   @Autowired
   private FakeProductFactory productFactory;

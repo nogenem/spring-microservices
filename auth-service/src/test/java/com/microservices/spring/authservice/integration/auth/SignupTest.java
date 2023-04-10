@@ -23,7 +23,7 @@ import com.microservices.spring.common.exceptions.ValidationErrorsException;
 public class SignupTest extends BaseIntegrationTest {
 
   @Autowired
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @Autowired
   private FakeUserFactory userFactory;

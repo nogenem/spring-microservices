@@ -74,7 +74,7 @@ public class StoreInventoryTest extends BaseIntegrationTest {
   }
 
   @Test
-  @DisplayName("Should not be able to store inventory that dont comply by thevalidations")
+  @DisplayName("Should not be able to store inventory that dont comply by the validations")
   public void shouldNotBeAbleToStoreInventoryThatDontComplyByTheValidations()
       throws JsonProcessingException, Exception {
     StoreInventoryRequest request = StoreInventoryRequest.builder()

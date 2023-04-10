@@ -30,13 +30,13 @@ public class FakeUpdateProductRequestFactory {
   }
 
   public List<UpdateProductRequest> createMany(int length) {
-    List<UpdateProductRequest> products = new ArrayList<>();
+    List<UpdateProductRequest> requests = new ArrayList<>();
 
     for (int i = 0; i < length; i++) {
-      products.add(createOne());
+      requests.add(createOne());
     }
 
-    return products;
+    return requests;
   }
 
 }

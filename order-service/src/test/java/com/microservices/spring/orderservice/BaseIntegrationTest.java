@@ -34,7 +34,7 @@ public abstract class BaseIntegrationTest {
   protected OrderRepository orderRepository;
 
   @DynamicPropertySource
-  static void mongodbProperties(DynamicPropertyRegistry registry) {
+  static void databaseProperties(DynamicPropertyRegistry registry) {
     postgresDBContainer.start();
 
     registry.add("spring.datasource.driver-class-name", postgresDBContainer::getDriverClassName);

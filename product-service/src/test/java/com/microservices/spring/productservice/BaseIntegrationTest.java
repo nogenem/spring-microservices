@@ -32,7 +32,7 @@ public abstract class BaseIntegrationTest {
   private MongoTemplate mongoTemplate;
 
   @DynamicPropertySource
-  static void mongodbProperties(DynamicPropertyRegistry registry) {
+  static void databaseProperties(DynamicPropertyRegistry registry) {
     mongoDBContainer.start();
 
     registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
