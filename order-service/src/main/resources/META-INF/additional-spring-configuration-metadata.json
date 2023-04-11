@@ -4,6 +4,11 @@
       "name": "responses.exceptions.return-stack-trace",
       "type": "java.lang.Boolean",
       "description": "Enables or disables the return of the exception stack trace by the API"
+    },
+    {
+      "name": "feign-client.inventory-service.url",
+      "type": "java.lang.String",
+      "description": "Url for the inventory-service to be used by the Feign Client lib"
     }
   ]
 }

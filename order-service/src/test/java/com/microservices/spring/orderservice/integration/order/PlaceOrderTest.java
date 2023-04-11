@@ -1,10 +1,14 @@
 package com.microservices.spring.orderservice.integration.order;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
@@ -15,11 +19,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.microservices.spring.common.CustomHeaders;
 import com.microservices.spring.common.exceptions.InvalidUserIdException;
 import com.microservices.spring.common.exceptions.ValidationErrorsException;
+import com.microservices.spring.inventoryservicecontracts.responses.InventoryQuantityResponse;
 import com.microservices.spring.orderservice.BaseIntegrationTest;
+import com.microservices.spring.orderservice.exceptions.OneOrMoreProductsOutOfStockException;
 import com.microservices.spring.orderservice.factories.requests.FakePlaceOrderRequestFactory;
+import com.microservices.spring.orderservicecontracts.requests.PlaceOrderLineItemRequest;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
 
 public class PlaceOrderTest extends BaseIntegrationTest {
@@ -32,6 +40,8 @@ public class PlaceOrderTest extends BaseIntegrationTest {
   public void shouldBeAbleToPlaceOrders() throws JsonProcessingException, Exception {
     PlaceOrderRequest request = placeOrderRequestFactory.createOne(2);
     String userId = UUID.randomUUID().toString();
+
+    stubInventoriesQuantitiesCall(request.getLineItems(), true);
 
     ResultActions resultActions = mvc.perform(post("/api/orders")
         .contentType(MediaType.APPLICATION_JSON)
@@ -47,6 +57,27 @@ public class PlaceOrderTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.id").isNotEmpty());
 
     Assertions.assertEquals(1, orderRepository.findAll().size());
+  }
+
+  @Test
+  @DisplayName("Should not be able to place orders with products that are out of stock")
+  public void shouldNotBeAbleToPlaceOrdersWithProductsThatAreOutOfStuck() throws JsonProcessingException, Exception {
+    PlaceOrderRequest request = placeOrderRequestFactory.createOne(2);
+    String userId = UUID.randomUUID().toString();
+
+    stubInventoriesQuantitiesCall(request.getLineItems(), false);
+
+    ResultActions resultActions = mvc.perform(post("/api/orders")
+        .contentType(MediaType.APPLICATION_JSON)
+        .header(CustomHeaders.USER_ID, userId)
+        .content(objectMapper.writeValueAsString(request)));
+
+    resultActions
+        // .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.code").value(OneOrMoreProductsOutOfStockException.CODE));
+
+    Assertions.assertEquals(0, orderRepository.findAll().size());
   }
 
   @Test
@@ -108,6 +139,19 @@ public class PlaceOrderTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.errors['lineItems[0].quantity']").isNotEmpty());
 
     Assertions.assertEquals(0, orderRepository.findAll().size());
+  }
+
+  private void stubInventoriesQuantitiesCall(List<PlaceOrderLineItemRequest> lineItems, boolean shouldAllBeInStock)
+      throws JsonProcessingException {
+    List<InventoryQuantityResponse> response = lineItems.stream()
+        .map(lineItem -> {
+          int quantity = shouldAllBeInStock ? lineItem.getQuantity() : 0;
+          return new InventoryQuantityResponse(lineItem.getProductSku(), quantity);
+        }).toList();
+
+    stubFor(WireMock.get(urlPathMatching("/api/inventories/([^/]*)/quantities"))
+        .willReturn(aResponse().withHeader("Content-Type", "application/json")
+            .withBody(objectMapper.writeValueAsString(response))));
   }
 
 }
