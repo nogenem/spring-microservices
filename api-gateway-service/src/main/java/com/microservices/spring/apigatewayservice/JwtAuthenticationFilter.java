@@ -23,7 +23,13 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class JwtAuthenticationFilter implements GlobalFilter {
 
-  private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/auth/signin", "/api/auth/signup");
+  private static final List<String> PUBLIC_ENDPOINTS = List.of(
+      // Auth
+      "/api/auth/signin",
+      "/api/auth/signup",
+      // Eureka
+      "/",
+      "/eureka/**");
   private static final String TOKEN_HEADER_KEY = "Authorization";
   private static final String TOKEN_HEADER_KEY_PREFIX = "Bearer ";
 
@@ -35,7 +41,14 @@ public class JwtAuthenticationFilter implements GlobalFilter {
     ServerHttpRequest request = (ServerHttpRequest) exchange.getRequest();
 
     Predicate<ServerHttpRequest> isSecuredEndpoint = r -> PUBLIC_ENDPOINTS.stream()
-        .noneMatch(uri -> r.getURI().getPath().contains(uri));
+        .noneMatch(uri -> {
+          if (uri.endsWith("/**")) {
+            return r.getURI().getPath().startsWith(uri.substring(0, uri.length() - 3));
+          } else if (uri.startsWith("**/")) {
+            return r.getURI().getPath().endsWith(uri.substring(3, uri.length()));
+          }
+          return r.getURI().getPath().equals(uri);
+        });
 
     if (isSecuredEndpoint.test(request)) {
       if (!request.getHeaders().containsKey(TOKEN_HEADER_KEY)) {
