@@ -16,6 +16,7 @@ public interface MapStructMapper {
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "orderNumber", expression = "java(java.util.UUID.randomUUID())")
+  @Mapping(target = "userId", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   Order placeOrderRequestToOrder(PlaceOrderRequest orderRequest);

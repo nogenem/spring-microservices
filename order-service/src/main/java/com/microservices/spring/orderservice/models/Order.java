@@ -28,10 +28,13 @@ public class Order extends BaseAuditingEntity {
 
   @Id
   @GeneratedValue
-  public UUID id;
+  private UUID id;
 
   @Column(name = "order_number", nullable = false)
-  public UUID orderNumber;
+  private UUID orderNumber;
+
+  @Column(name = "user_id", nullable = false)
+  private UUID userId;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<OrderLineItem> lineItems;

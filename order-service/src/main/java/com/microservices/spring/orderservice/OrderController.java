@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservices.spring.common.CustomHeaders;
+import com.microservices.spring.common.exceptions.InvalidUserIdException;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.orderservice.exceptions.InvalidOrderNumberException;
 import com.microservices.spring.orderservice.models.Order;
@@ -48,8 +51,10 @@ public class OrderController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Order placed"),
       @ApiResponse(responseCode = "422", description = "Validation errors", content = @Content) })
-  public OrderResponse placeOrder(@Valid @RequestBody PlaceOrderRequest request) {
-    Order order = orderService.placeOrder(request);
+  public OrderResponse placeOrder(@Valid @RequestBody PlaceOrderRequest request,
+      @RequestHeader(CustomHeaders.USER_ID) String userId) {
+    UUID userIdUuid = userIdStringToUuid(userId);
+    Order order = orderService.placeOrder(request, userIdUuid);
 
     return mapStructMapper.orderToOrderResponse(order);
   }
@@ -92,6 +97,14 @@ public class OrderController {
       return UUID.fromString(orderNumber);
     } catch (IllegalArgumentException exception) {
       throw new InvalidOrderNumberException(orderNumber);
+    }
+  }
+
+  private UUID userIdStringToUuid(String userId) {
+    try {
+      return UUID.fromString(userId);
+    } catch (IllegalArgumentException exception) {
+      throw new InvalidUserIdException(userId);
     }
   }
 

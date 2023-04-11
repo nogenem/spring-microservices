@@ -21,11 +21,12 @@ public class OrderService {
   private OrderRepository orderRepository;
   private final MapStructMapper mapStructMapper;
 
-  public Order placeOrder(PlaceOrderRequest request) {
+  public Order placeOrder(PlaceOrderRequest request, UUID userId) {
     // TODO: Check inventory-service for the availability of the products
     // TODO: Get product prices from the product-service
 
     Order order = mapStructMapper.placeOrderRequestToOrder(request);
+    order.setUserId(userId);
     order.getLineItems().stream().forEach(item -> {
       item.setOrder(order);
       item.setProductPrice(1000); // TODO: Change this

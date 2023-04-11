@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.microservices.spring.common.CustomHeaders;
+import com.microservices.spring.common.exceptions.InvalidUserIdException;
 import com.microservices.spring.common.exceptions.ValidationErrorsException;
 import com.microservices.spring.orderservice.BaseIntegrationTest;
 import com.microservices.spring.orderservice.factories.requests.FakePlaceOrderRequestFactory;
@@ -28,9 +31,11 @@ public class PlaceOrderTest extends BaseIntegrationTest {
   @DisplayName("Should be able to place orders")
   public void shouldBeAbleToPlaceOrders() throws JsonProcessingException, Exception {
     PlaceOrderRequest request = placeOrderRequestFactory.createOne(2);
+    String userId = UUID.randomUUID().toString();
 
     ResultActions resultActions = mvc.perform(post("/api/orders")
         .contentType(MediaType.APPLICATION_JSON)
+        .header(CustomHeaders.USER_ID, userId)
         .content(objectMapper.writeValueAsString(request)));
 
     resultActions
@@ -38,9 +43,29 @@ public class PlaceOrderTest extends BaseIntegrationTest {
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.lineItems.length()").value(request.getLineItems().size()))
         .andExpect(jsonPath("$.orderNumber").isNotEmpty())
+        .andExpect(jsonPath("$.userId").value(userId))
         .andExpect(jsonPath("$.id").isNotEmpty());
 
     Assertions.assertEquals(1, orderRepository.findAll().size());
+  }
+
+  @Test
+  @DisplayName("Should not be able to place orders with an invalid uuid userId")
+  public void shouldNotBeAbleToPlaceOrdersWithAnInvalidUuidUserId() throws JsonProcessingException, Exception {
+    PlaceOrderRequest request = placeOrderRequestFactory.createOne(2);
+    String userId = UUID.randomUUID().toString() + "_invalid";
+
+    ResultActions resultActions = mvc.perform(post("/api/orders")
+        .contentType(MediaType.APPLICATION_JSON)
+        .header(CustomHeaders.USER_ID, userId)
+        .content(objectMapper.writeValueAsString(request)));
+
+    resultActions
+        // .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.code").value(InvalidUserIdException.CODE));
+
+    Assertions.assertEquals(0, orderRepository.findAll().size());
   }
 
   @Test
@@ -51,9 +76,11 @@ public class PlaceOrderTest extends BaseIntegrationTest {
     PlaceOrderRequest request = PlaceOrderRequest.builder()
         .lineItems(new ArrayList<>())
         .build();
+    String userId = UUID.randomUUID().toString();
 
     ResultActions resultActions = mvc.perform(post("/api/orders")
         .contentType(MediaType.APPLICATION_JSON)
+        .header(CustomHeaders.USER_ID, userId)
         .content(objectMapper.writeValueAsString(request)));
 
     resultActions

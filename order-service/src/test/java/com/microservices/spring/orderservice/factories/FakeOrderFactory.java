@@ -22,6 +22,7 @@ public class FakeOrderFactory {
 
     Order order = Order.builder()
         .orderNumber(UUID.randomUUID())
+        .userId(UUID.randomUUID())
         .build();
     order.setLineItems(lineItems);
 

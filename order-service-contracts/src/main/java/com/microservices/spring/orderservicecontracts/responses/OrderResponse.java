@@ -17,6 +17,7 @@ public class OrderResponse implements IEntityResponse {
 
   private UUID id;
   private UUID orderNumber;
+  private UUID userId;
   private List<OrderLineItemResponse> lineItems;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
