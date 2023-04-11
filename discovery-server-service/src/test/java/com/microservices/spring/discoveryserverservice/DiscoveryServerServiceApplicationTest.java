@@ -6,7 +6,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class DiscoveryServerServiceApplication {
+class DiscoveryServerServiceApplicationTest {
 
 	@Test
 	void contextLoads() {
