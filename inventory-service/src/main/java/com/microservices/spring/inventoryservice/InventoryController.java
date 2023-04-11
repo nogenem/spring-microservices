@@ -1,5 +1,7 @@
 package com.microservices.spring.inventoryservice;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.inventoryservicecontracts.requests.StoreInventoryRequest;
 import com.microservices.spring.inventoryservicecontracts.requests.UpdateInventoryRequest;
+import com.microservices.spring.inventoryservicecontracts.responses.InventoryQuantityResponse;
 import com.microservices.spring.inventoryservicecontracts.responses.InventoryResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -105,6 +108,18 @@ public class InventoryController {
       @ApiResponse(responseCode = "404", description = "Inventory with this sku wasn't found", content = @Content) })
   public void deleteInventoryBySku(@PathVariable("sku") String sku) {
     inventoryService.deleteInventory(sku);
+  }
+
+  @GetMapping("/{skus}/quantities")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(summary = "Get inventories quantities by skus")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "The inventories quantities found"),
+      @ApiResponse(responseCode = "404", description = "Inventories with these skus weren't found", content = @Content) })
+  public List<InventoryQuantityResponse> findInventoriesQuantitiesBySkus(@PathVariable List<String> skus) {
+    List<Inventory> inventories = inventoryService.findBySkuIn(skus);
+
+    return mapStructMapper.inventoriesToInventoryQuantityResponses(inventories);
   }
 
   private Sort getSortBy(String sort) {

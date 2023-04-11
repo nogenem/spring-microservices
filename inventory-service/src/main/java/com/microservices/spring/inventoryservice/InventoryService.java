@@ -1,9 +1,12 @@
 package com.microservices.spring.inventoryservice;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.microservices.spring.inventoryservice.exceptions.InventoriesWithTheseSkusNotFoundException;
 import com.microservices.spring.inventoryservice.exceptions.InventoryWithThisSkuNotFoundException;
 import com.microservices.spring.inventoryservicecontracts.requests.StoreInventoryRequest;
 import com.microservices.spring.inventoryservicecontracts.requests.UpdateInventoryRequest;
@@ -38,6 +41,19 @@ public class InventoryService {
   public Inventory findBySku(String sku) {
     return inventoryRepository.findBySku(sku)
         .orElseThrow(() -> new InventoryWithThisSkuNotFoundException(sku));
+  }
+
+  public List<Inventory> findBySkuIn(List<String> skus) {
+    List<Inventory> inventories = inventoryRepository.findBySkuIn(skus);
+
+    if (inventories.size() != skus.size()) {
+      List<String> databaseSkus = inventories.stream().map(Inventory::getSku).toList();
+      List<String> invalidSkus = skus.stream().filter(sku -> !databaseSkus.contains(sku)).toList();
+
+      throw new InventoriesWithTheseSkusNotFoundException(invalidSkus);
+    }
+
+    return inventories;
   }
 
   public Inventory updateInventory(String sku, @Valid UpdateInventoryRequest request) {
