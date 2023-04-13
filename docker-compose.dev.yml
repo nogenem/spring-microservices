@@ -74,6 +74,7 @@ services:
       - ./order-service:/app/order-service
       - ./order-service-contracts:/app/order-service-contracts
       - ./inventory-service-contracts:/app/inventory-service-contracts
+      - ./product-service-contracts:/app/product-service-contracts
       - ./common:/app/common
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env

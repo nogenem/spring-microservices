@@ -9,6 +9,11 @@
       "name": "feign-client.inventory-service.url",
       "type": "java.lang.String",
       "description": "Url for the inventory-service to be used by the Feign Client lib"
+    },
+    {
+      "name": "feign-client.product-service.url",
+      "type": "java.lang.String",
+      "description": "Url for the product-service to be used by the Feign Client lib"
     }
   ]
 }

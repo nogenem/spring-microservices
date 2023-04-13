@@ -27,13 +27,18 @@ import com.microservices.spring.inventoryservicecontracts.responses.InventoryQua
 import com.microservices.spring.orderservice.BaseIntegrationTest;
 import com.microservices.spring.orderservice.exceptions.OneOrMoreProductsOutOfStockException;
 import com.microservices.spring.orderservice.factories.requests.FakePlaceOrderRequestFactory;
+import com.microservices.spring.orderservice.factories.responses.FakeProductPriceResponseFactory;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderLineItemRequest;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
+import com.microservices.spring.productservicecontracts.responses.ProductPriceResponse;
 
 public class PlaceOrderTest extends BaseIntegrationTest {
 
   @Autowired
   private FakePlaceOrderRequestFactory placeOrderRequestFactory;
+
+  @Autowired
+  private FakeProductPriceResponseFactory productPriceResponseFactory;
 
   @Test
   @DisplayName("Should be able to place orders")
@@ -42,6 +47,7 @@ public class PlaceOrderTest extends BaseIntegrationTest {
     String userId = UUID.randomUUID().toString();
 
     stubInventoriesQuantitiesCall(request.getLineItems(), true);
+    stubProductsPricesCall(request.getLineItems());
 
     ResultActions resultActions = mvc.perform(post("/api/orders")
         .contentType(MediaType.APPLICATION_JSON)
@@ -61,11 +67,12 @@ public class PlaceOrderTest extends BaseIntegrationTest {
 
   @Test
   @DisplayName("Should not be able to place orders with products that are out of stock")
-  public void shouldNotBeAbleToPlaceOrdersWithProductsThatAreOutOfStuck() throws JsonProcessingException, Exception {
+  public void shouldNotBeAbleToPlaceOrdersWithProductsThatAreOutOfStock() throws JsonProcessingException, Exception {
     PlaceOrderRequest request = placeOrderRequestFactory.createOne(2);
     String userId = UUID.randomUUID().toString();
 
     stubInventoriesQuantitiesCall(request.getLineItems(), false);
+    stubProductsPricesCall(request.getLineItems());
 
     ResultActions resultActions = mvc.perform(post("/api/orders")
         .contentType(MediaType.APPLICATION_JSON)
@@ -150,6 +157,20 @@ public class PlaceOrderTest extends BaseIntegrationTest {
         }).toList();
 
     stubFor(WireMock.get(urlPathMatching("/api/inventories/([^/]*)/quantities"))
+        .willReturn(aResponse().withHeader("Content-Type", "application/json")
+            .withBody(objectMapper.writeValueAsString(response))));
+  }
+
+  private void stubProductsPricesCall(List<PlaceOrderLineItemRequest> lineItems)
+      throws JsonProcessingException {
+    List<ProductPriceResponse> response = lineItems.stream()
+        .map(lineItem -> {
+          ProductPriceResponse response2 = productPriceResponseFactory.createOne();
+          response2.setSku(lineItem.getProductSku());
+          return response2;
+        }).toList();
+
+    stubFor(WireMock.get(urlPathMatching("/api/products/([^/]*)/prices"))
         .willReturn(aResponse().withHeader("Content-Type", "application/json")
             .withBody(objectMapper.writeValueAsString(response))));
   }

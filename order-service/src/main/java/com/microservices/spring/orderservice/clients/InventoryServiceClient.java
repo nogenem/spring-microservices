@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.microservices.spring.inventoryservicecontracts.responses.InventoryQuantityResponse;
 
-@FeignClient("${feign-client.inventory-service.url}")
+@FeignClient("${feign-client.inventory-service.url}/api/inventories")
 public interface InventoryServiceClient {
 
-  @GetMapping("/api/inventories/{skus}/quantities")
+  @GetMapping("/{skus}/quantities")
   List<InventoryQuantityResponse> findInventoriesQuantitiesBySkus(@PathVariable List<String> skus);
 
 }

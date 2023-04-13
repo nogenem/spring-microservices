@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.microservices.spring.inventoryservicecontracts.responses.InventoryQuantityResponse;
 import com.microservices.spring.orderservice.clients.InventoryServiceClient;
+import com.microservices.spring.orderservice.clients.ProductServiceClient;
 import com.microservices.spring.orderservice.exceptions.OneOrMoreProductsOutOfStockException;
 import com.microservices.spring.orderservice.exceptions.OrderWithThisOrderNumberNotFoundException;
 import com.microservices.spring.orderservice.models.Order;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderLineItemRequest;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
+import com.microservices.spring.productservicecontracts.responses.ProductPriceResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,20 +29,22 @@ public class OrderService {
 
   private OrderRepository orderRepository;
   private final MapStructMapper mapStructMapper;
+
   private final InventoryServiceClient inventoryServiceClient;
+  private final ProductServiceClient productServiceClient;
 
   public Order placeOrder(PlaceOrderRequest request, UUID userId) {
-    // TODO: Get product prices from the product-service
-
     if (!areAllProductsInStock(request.getLineItems())) {
       throw new OneOrMoreProductsOutOfStockException();
     }
+
+    Map<String, Integer> productsSkuToPriceMap = findProductsPrices(request.getLineItems());
 
     Order order = mapStructMapper.placeOrderRequestToOrder(request);
     order.setUserId(userId);
     order.getLineItems().stream().forEach(item -> {
       item.setOrder(order);
-      item.setProductPrice(1000); // TODO: Change this
+      item.setProductPrice(productsSkuToPriceMap.get(item.getProductSku()));
     });
 
     orderRepository.save(order);
@@ -71,6 +75,16 @@ public class OrderService {
 
     return inventoriesQuantitiesResponse.stream()
         .allMatch(inventory -> inventory.getQuantity() - lineItemsSkuToQuantityMap.get(inventory.getSku()) >= 0);
+  }
+
+  private Map<String, Integer> findProductsPrices(List<PlaceOrderLineItemRequest> lineItems) {
+    List<String> lineItemsSkus = lineItems.stream()
+        .map(PlaceOrderLineItemRequest::getProductSku).toList();
+
+    List<ProductPriceResponse> productPricesResponse = productServiceClient.findProductsPricesBySkus(lineItemsSkus);
+
+    return productPricesResponse.stream()
+        .collect(Collectors.toMap(ProductPriceResponse::getSku, ProductPriceResponse::getPrice));
   }
 
 }

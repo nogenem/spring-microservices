@@ -29,6 +29,10 @@
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>inventory-service-contracts</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>product-service-contracts</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -123,6 +127,9 @@
 						</folder>
 						<folder>                            
 							../inventory-service-contracts/target/classes
+						</folder>
+						<folder>                            
+							../product-service-contracts/target/classes
 						</folder>
 					</folders>
 					<excludes>
