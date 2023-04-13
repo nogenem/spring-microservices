@@ -1,5 +1,7 @@
 package com.microservices.spring.productservice;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.productservicecontracts.requests.StoreProductRequest;
 import com.microservices.spring.productservicecontracts.requests.UpdateProductRequest;
+import com.microservices.spring.productservicecontracts.responses.ProductPriceResponse;
 import com.microservices.spring.productservicecontracts.responses.ProductResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -105,6 +108,18 @@ public class ProductController {
       @ApiResponse(responseCode = "404", description = "Product with this sku wasn't found", content = @Content) })
   public void deleteProductBySku(@PathVariable("sku") String sku) {
     productService.deleteProduct(sku);
+  }
+
+  @GetMapping("/{skus}/prices")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(summary = "Get products prices by skus")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "The products prices found"),
+      @ApiResponse(responseCode = "404", description = "Products with these skus weren't found", content = @Content) })
+  public List<ProductPriceResponse> findProductsPricesBySkus(@PathVariable List<String> skus) {
+    List<Product> products = productService.findBySkuIn(skus);
+
+    return mapStructMapper.productsToProductPriceResponses(products);
   }
 
   private Sort getSortBy(String sort) {

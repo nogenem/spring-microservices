@@ -1,5 +1,7 @@
 package com.microservices.spring.productservice;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -8,6 +10,7 @@ import org.springframework.data.domain.Page;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.productservicecontracts.requests.StoreProductRequest;
 import com.microservices.spring.productservicecontracts.requests.UpdateProductRequest;
+import com.microservices.spring.productservicecontracts.responses.ProductPriceResponse;
 import com.microservices.spring.productservicecontracts.responses.ProductResponse;
 
 @Mapper(componentModel = "spring")
@@ -29,5 +32,9 @@ public interface MapStructMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   void updateProductFromUpdateProductRequest(UpdateProductRequest updateProductRequest, @MappingTarget Product product);
+
+  ProductPriceResponse productToProductPriceResponse(Product product);
+
+  List<ProductPriceResponse> productsToProductPriceResponses(List<Product> products);
 
 }

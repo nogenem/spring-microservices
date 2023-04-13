@@ -1,11 +1,14 @@
 package com.microservices.spring.productservice;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.slugify.Slugify;
 import com.microservices.spring.productservice.exceptions.ProductWithThisSkuNotFoundException;
+import com.microservices.spring.productservice.exceptions.ProductsWithTheseSkusNotFoundException;
 import com.microservices.spring.productservicecontracts.requests.StoreProductRequest;
 import com.microservices.spring.productservicecontracts.requests.UpdateProductRequest;
 
@@ -40,6 +43,19 @@ public class ProductService {
   public Product findBySku(String sku) {
     return productRepository.findBySku(sku)
         .orElseThrow(() -> new ProductWithThisSkuNotFoundException(sku));
+  }
+
+  public List<Product> findBySkuIn(List<String> skus) {
+    List<Product> products = productRepository.findBySkuIn(skus);
+
+    if (products.size() != skus.size()) {
+      List<String> databaseSkus = products.stream().map(Product::getSku).toList();
+      List<String> invalidSkus = skus.stream().filter(sku -> !databaseSkus.contains(sku)).toList();
+
+      throw new ProductsWithTheseSkusNotFoundException(invalidSkus);
+    }
+
+    return products;
   }
 
   public Product updateProduct(String sku, UpdateProductRequest request) {
