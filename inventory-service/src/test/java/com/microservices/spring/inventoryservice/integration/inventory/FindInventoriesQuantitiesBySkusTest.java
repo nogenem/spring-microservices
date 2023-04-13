@@ -35,6 +35,7 @@ public class FindInventoriesQuantitiesBySkusTest extends BaseIntegrationTest {
     inventoryRepository.saveAll(savedInventories);
 
     List<String> skus = savedInventories.stream().map(Inventory::getSku).toList();
+    List<Integer> quantities = savedInventories.stream().map(Inventory::getQuantity).toList();
 
     ResultActions resultActions = mvc.perform(get("/api/inventories/{skus}/quantities", String.join(",", skus))
         .contentType(MediaType.APPLICATION_JSON));
@@ -45,7 +46,9 @@ public class FindInventoriesQuantitiesBySkusTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(savedInventories.size()))
         .andExpect(jsonPath("$[0].sku").value(in(skus)))
-        .andExpect(jsonPath("$[1].sku").value(in(skus)));
+        .andExpect(jsonPath("$[1].sku").value(in(skus)))
+        .andExpect(jsonPath("$[0].quantity").value(in(quantities)))
+        .andExpect(jsonPath("$[1].quantity").value(in(quantities)));
   }
 
   @Test
