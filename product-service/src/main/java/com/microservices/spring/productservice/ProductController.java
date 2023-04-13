@@ -26,6 +26,8 @@ import com.microservices.spring.productservicecontracts.responses.ProductPriceRe
 import com.microservices.spring.productservicecontracts.responses.ProductResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -116,6 +118,7 @@ public class ProductController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "The products prices found"),
       @ApiResponse(responseCode = "404", description = "Products with these skus weren't found", content = @Content) })
+  @Parameter(in = ParameterIn.PATH, name = "skus", example = "SKU1,SKU2,SKU3")
   public List<ProductPriceResponse> findProductsPricesBySkus(@PathVariable List<String> skus) {
     List<Product> products = productService.findBySkuIn(skus);
 

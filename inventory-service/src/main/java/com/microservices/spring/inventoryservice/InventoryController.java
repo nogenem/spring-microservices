@@ -26,6 +26,8 @@ import com.microservices.spring.inventoryservicecontracts.responses.InventoryQua
 import com.microservices.spring.inventoryservicecontracts.responses.InventoryResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -116,6 +118,7 @@ public class InventoryController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "The inventories quantities found"),
       @ApiResponse(responseCode = "404", description = "Inventories with these skus weren't found", content = @Content) })
+  @Parameter(in = ParameterIn.PATH, name = "skus", example = "SKU1,SKU2,SKU3")
   public List<InventoryQuantityResponse> findInventoriesQuantitiesBySkus(@PathVariable List<String> skus) {
     List<Inventory> inventories = inventoryService.findBySkuIn(skus);
 
