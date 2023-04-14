@@ -27,6 +27,8 @@ public class JwtAuthenticationFilter implements GlobalFilter {
       // Auth
       "/api/auth/signin",
       "/api/auth/signup",
+      // Actuator
+      "/actuator/**",
       // Eureka
       "/",
       "/eureka/**");
