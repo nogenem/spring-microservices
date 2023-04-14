@@ -43,6 +43,7 @@
     <springdoc-openapi.version>2.1.0</springdoc-openapi.version>
     <spring-cloud.version>2022.0.2</spring-cloud.version>
     <java-jwt.version>4.4.0</java-jwt.version>
+    <feign-core.version>12.3</feign-core.version>
   </properties>
 
   <dependencyManagement>
@@ -123,6 +124,11 @@
         <groupId>com.auth0</groupId>
         <artifactId>java-jwt</artifactId>
         <version>${java-jwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-core</artifactId>
+        <version>${feign-core.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

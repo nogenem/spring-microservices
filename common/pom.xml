@@ -31,6 +31,12 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
     </dependency>
+    <dependency>
+      <!-- Common package that contains:
+             - feign.FeignException -->
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-core</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>me.paulschwarz</groupId>

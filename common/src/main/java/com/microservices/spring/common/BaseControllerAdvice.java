@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservices.spring.common.exceptions.ApiException;
 import com.microservices.spring.common.exceptions.ApiException.ValidationErrorsMap;
 import com.microservices.spring.common.exceptions.InternalServerErrorException;
 import com.microservices.spring.common.exceptions.ValidationErrorsException;
 import com.microservices.spring.common.responses.ExceptionResponse;
 
+import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,9 @@ public class BaseControllerAdvice {
 
   @Autowired
   private CommonMapper mapper;
+
+  @Autowired
+  protected ObjectMapper objectMapper;
 
   @ExceptionHandler({ ApiException.class })
   @ResponseBody
@@ -131,6 +137,23 @@ public class BaseControllerAdvice {
     InternalServerErrorException apiException = new InternalServerErrorException();
 
     return buildExceptionResponse(apiException, baseException);
+  }
+
+  @ExceptionHandler({ FeignException.class })
+  @ResponseBody
+  public ResponseEntity<ExceptionResponse> onFeignException(FeignException baseException) {
+    String responseBody = baseException.contentUTF8();
+
+    try {
+      ExceptionResponse apiException = objectMapper.readValue(responseBody, ExceptionResponse.class);
+      return ResponseEntity.status(apiException.getStatus()).body(apiException);
+    } catch (JsonProcessingException e) {
+      log.error("FeignException", baseException);
+
+      InternalServerErrorException apiException = new InternalServerErrorException();
+
+      return buildExceptionResponse(apiException, baseException);
+    }
   }
 
   protected ResponseEntity<ExceptionResponse> buildExceptionResponse(ApiException apiException,
