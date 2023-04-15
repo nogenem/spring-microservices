@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.microservices.spring.inventoryservicecontracts.responses.InventoryQuantityResponse;
 
-@FeignClient("${feign-client.inventory-service.url}/api/inventories")
+@FeignClient(name = "${feign-client.inventory-service.url}/api/inventories", contextId = "inventory-service")
 public interface InventoryServiceClient {
 
   @GetMapping("/{skus}/quantities")

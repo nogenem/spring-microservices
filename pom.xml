@@ -44,6 +44,7 @@
     <spring-cloud.version>2022.0.2</spring-cloud.version>
     <java-jwt.version>4.4.0</java-jwt.version>
     <feign-core.version>12.3</feign-core.version>
+    <feign-micrometer.version>12.3</feign-micrometer.version>
   </properties>
 
   <dependencyManagement>
@@ -129,6 +130,11 @@
         <groupId>io.github.openfeign</groupId>
         <artifactId>feign-core</artifactId>
         <version>${feign-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-micrometer</artifactId>
+        <version>${feign-micrometer.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

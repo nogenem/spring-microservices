@@ -128,6 +128,8 @@ services:
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
+    depends_on:
+      - zipkin
 
   api-gateway-service:
     container_name: api-gateway-service
@@ -245,3 +247,13 @@ services:
     depends_on:
       - inventory-service-postgres
       - order-service-postgres
+
+  # Zipkin
+  zipkin:
+    image: openzipkin/zipkin:2.24.0-amd64
+    container_name: zipkin
+    restart: always
+    environment:
+      - QUERY_PORT=${ZIPKIN_PORT}
+    ports:
+      - ${ZIPKIN_PORT}:${ZIPKIN_PORT}

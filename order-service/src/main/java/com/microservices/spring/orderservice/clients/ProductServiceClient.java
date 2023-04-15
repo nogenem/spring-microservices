@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.microservices.spring.productservicecontracts.responses.ProductPriceResponse;
 
-@FeignClient("${feign-client.product-service.url}/api/products")
+@FeignClient(name = "${feign-client.product-service.url}/api/products", contextId = "product-service")
 public interface ProductServiceClient {
 
   @GetMapping("/{skus}/prices")
