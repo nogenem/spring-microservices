@@ -26,8 +26,10 @@ services:
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
-      - product-service-mongo
-      - discovery-server-service
+      product-service-mongo:
+        condition: service_started
+      discovery-server-service:
+        condition: service_healthy
 
   inventory-service:
     build:
@@ -52,8 +54,10 @@ services:
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
-      - inventory-service-postgres
-      - discovery-server-service
+      inventory-service-postgres:
+        condition: service_started
+      discovery-server-service:
+        condition: service_healthy
 
   order-service:
     build:
@@ -80,8 +84,10 @@ services:
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
-      - order-service-postgres
-      - discovery-server-service
+      order-service-postgres:
+        condition: service_started
+      discovery-server-service:
+        condition: service_healthy
 
   auth-service:
     build:
@@ -106,8 +112,10 @@ services:
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
-      - auth-service-postgres
-      - discovery-server-service
+      auth-service-postgres:
+        condition: service_started
+      discovery-server-service:
+        condition: service_healthy
 
   discovery-server-service:
     container_name: discovery-server-service
@@ -119,6 +127,17 @@ services:
         useruid: ${DOCKER_IMAGES_OS_USERUID}
         usergid: ${DOCKER_IMAGES_OS_USERGID}
         service_folder_name: discovery-server-service
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://discovery-server-service:${DISCOVERY_SERVER_SERVICE_PORT}"
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     ports:
       - ${DISCOVERY_SERVER_SERVICE_PORT}:${DISCOVERY_SERVER_SERVICE_PORT} # App
       - ${DISCOVERY_SERVER_SERVICE_DEBUGGER_PORT}:5005 # Debugger
@@ -152,7 +171,8 @@ services:
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
-      - discovery-server-service
+      discovery-server-service:
+        condition: service_healthy
 
   # MONGO
   product-service-mongo:
