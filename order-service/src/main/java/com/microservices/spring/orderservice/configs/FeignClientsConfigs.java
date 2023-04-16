@@ -1,4 +1,4 @@
-package com.microservices.spring.orderservice;
+package com.microservices.spring.orderservice.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

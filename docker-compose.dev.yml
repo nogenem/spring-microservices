@@ -88,6 +88,8 @@ services:
         condition: service_started
       discovery-server-service:
         condition: service_healthy
+      broker:
+        condition: service_started
 
   auth-service:
     build:
@@ -113,6 +115,34 @@ services:
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
       auth-service-postgres:
+        condition: service_started
+      discovery-server-service:
+        condition: service_healthy
+
+  notification-service:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+      args:
+        username: ${DOCKER_IMAGES_OS_USERNAME}
+        useruid: ${DOCKER_IMAGES_OS_USERUID}
+        usergid: ${DOCKER_IMAGES_OS_USERGID}
+        service_folder_name: notification-service
+    deploy:
+      replicas: ${NOTIFICATION_SERVICE_NUM_OF_REPLICAS}
+    ports:
+      - ${NOTIFICATION_SERVICE_HOST_MIN_PORT}-${NOTIFICATION_SERVICE_HOST_MAX_PORT}:${NOTIFICATION_SERVICE_CONTAINER_PORT} # App
+      - ${NOTIFICATION_SERVICE_DEBUGGER_HOST_MIN_PORT}-${NOTIFICATION_SERVICE_DEBUGGER_HOST_MAX_PORT}:5005 # Debugger
+      - ${NOTIFICATION_SERVICE_LIVE_RELOAD_HOST_MIN_PORT}-${NOTIFICATION_SERVICE_LIVE_RELOAD_HOST_MAX_PORT}:35729 # Livereload
+    volumes:
+      - ./notification-service:/app/notification-service
+      - ./order-service-contracts:/app/order-service-contracts
+      - ./common:/app/common
+      - ./pom.xml:/app/pom.xml
+      - ./.env:/app/.env
+      - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
+    depends_on:
+      broker:
         condition: service_started
       discovery-server-service:
         condition: service_healthy
@@ -277,3 +307,51 @@ services:
       - QUERY_PORT=${ZIPKIN_PORT}
     ports:
       - ${ZIPKIN_PORT}:${ZIPKIN_PORT}
+
+  # Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      # https://docs.confluent.io/platform/current/installation/docker/operations/external-volumes.html#data-volumes-for-kafka-and-zk
+      - ./_databases/zookeeper/data:/var/lib/zookeeper/data
+      - ./_databases/zookeeper/log:/var/lib/zookeeper/log
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: broker
+    ports:
+      - ${BROKER_EXTERNAL_PORT}:${BROKER_EXTERNAL_PORT}
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:${ZOOKEEPER_CLIENT_PORT}'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:${BROKER_EXTERNAL_PORT},PLAINTEXT_INTERNAL://broker:${BROKER_INTERNAL_PORT}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: ${BROKER_METRICS_PORT}
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=broker -Dcom.sun.management.jmxremote.rmi.port=${BROKER_METRICS_PORT}
+    volumes:
+      # https://docs.confluent.io/platform/current/installation/docker/operations/external-volumes.html#data-volumes-for-kafka-and-zk
+      - ./_databases/kafka/data:/var/lib/kafka/data
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - ${KAFKA_UI_PORT}:8080
+    environment:
+      KAFKA_CLUSTERS_0_NAME: spring-microservices
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:${BROKER_INTERNAL_PORT}
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9998
+      DYNAMIC_CONFIG_ENABLED: true
+    # volumes:
+    #   - ./configs/kafka_ui_config.yaml:/etc/kafkaui/dynamic_config.yaml
+    depends_on:
+      - broker

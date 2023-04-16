@@ -1,4 +1,4 @@
-package com.microservices.spring.orderservice;
+package com.microservices.spring.orderservice.services;
 
 import java.util.List;
 import java.util.Map;
@@ -9,12 +9,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.microservices.spring.common.kafka.KafkaTopics;
 import com.microservices.spring.inventoryservicecontracts.responses.InventoryQuantityResponse;
+import com.microservices.spring.orderservice.MapStructMapper;
+import com.microservices.spring.orderservice.OrderRepository;
 import com.microservices.spring.orderservice.clients.InventoryServiceClient;
 import com.microservices.spring.orderservice.clients.ProductServiceClient;
 import com.microservices.spring.orderservice.exceptions.OneOrMoreProductsOutOfStockException;
 import com.microservices.spring.orderservice.exceptions.OrderWithThisOrderNumberNotFoundException;
 import com.microservices.spring.orderservice.models.Order;
+import com.microservices.spring.orderservicecontracts.events.OrderPlacedEvent;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderLineItemRequest;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
 import com.microservices.spring.productservicecontracts.responses.ProductPriceResponse;
@@ -27,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrderService {
 
+  private KafkaProducerService kafkaService;
   private OrderRepository orderRepository;
   private final MapStructMapper mapStructMapper;
 
@@ -48,6 +53,7 @@ public class OrderService {
     });
 
     orderRepository.save(order);
+    kafkaService.sendEventOnTopic(KafkaTopics.NOTIFICATION_TOPIC, new OrderPlacedEvent(order.getOrderNumber()));
 
     log.info("Order saved. Id: {} - OrderNumber: {}", order.getId(), order.getOrderNumber());
 

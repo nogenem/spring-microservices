@@ -23,6 +23,7 @@ import com.microservices.spring.common.exceptions.InvalidUserIdException;
 import com.microservices.spring.common.responses.PagedEntityResponse;
 import com.microservices.spring.orderservice.exceptions.InvalidOrderNumberException;
 import com.microservices.spring.orderservice.models.Order;
+import com.microservices.spring.orderservice.services.OrderService;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
 import com.microservices.spring.orderservicecontracts.responses.OrderResponse;
 

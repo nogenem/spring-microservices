@@ -24,6 +24,7 @@
     <module>api-gateway-service</module>
     <module>auth-service</module>
     <module>auth-service-contracts</module>
+    <module>notification-service</module>
   </modules>
 
   <groupId>com.microservices.spring</groupId>
