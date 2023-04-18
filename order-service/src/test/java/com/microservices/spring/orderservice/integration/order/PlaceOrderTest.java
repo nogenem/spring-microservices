@@ -7,15 +7,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,11 +26,13 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.microservices.spring.common.CustomHeaders;
 import com.microservices.spring.common.exceptions.InvalidUserIdException;
 import com.microservices.spring.common.exceptions.ValidationErrorsException;
+import com.microservices.spring.common.kafka.KafkaTopics;
 import com.microservices.spring.inventoryservicecontracts.responses.InventoryQuantityResponse;
-import com.microservices.spring.orderservice.BaseIntegrationTest;
 import com.microservices.spring.orderservice.exceptions.OneOrMoreProductsOutOfStockException;
 import com.microservices.spring.orderservice.factories.requests.FakePlaceOrderRequestFactory;
 import com.microservices.spring.orderservice.factories.responses.FakeProductPriceResponseFactory;
+import com.microservices.spring.orderservice.integration.BaseIntegrationTest;
+import com.microservices.spring.orderservicecontracts.events.OrderPlacedEvent;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderLineItemRequest;
 import com.microservices.spring.orderservicecontracts.requests.PlaceOrderRequest;
 import com.microservices.spring.productservicecontracts.responses.ProductPriceResponse;
@@ -39,6 +44,11 @@ public class PlaceOrderTest extends BaseIntegrationTest {
 
   @Autowired
   private FakeProductPriceResponseFactory productPriceResponseFactory;
+
+  @BeforeEach
+  public void beforeEach() {
+    setupOrderPlacedConsumer();
+  }
 
   @Test
   @DisplayName("Should be able to place orders")
@@ -54,11 +64,17 @@ public class PlaceOrderTest extends BaseIntegrationTest {
         .header(CustomHeaders.USER_ID, userId)
         .content(objectMapper.writeValueAsString(request)));
 
+    var singleRecord = KafkaTestUtils.getSingleRecord(orderPlacedConsumer,
+        KafkaTopics.NOTIFICATION_TOPIC, Duration.ofSeconds(5));
+    OrderPlacedEvent event = singleRecord.value();
+
+    Assertions.assertNotNull(event);
+
     resultActions
         // .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.lineItems.length()").value(request.getLineItems().size()))
-        .andExpect(jsonPath("$.orderNumber").isNotEmpty())
+        .andExpect(jsonPath("$.orderNumber").value(event.getOrderNumber().toString()))
         .andExpect(jsonPath("$.userId").value(userId))
         .andExpect(jsonPath("$.id").isNotEmpty());
 

@@ -13,9 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.microservices.spring.orderservice.BaseIntegrationTest;
 import com.microservices.spring.orderservice.OrderRepository;
 import com.microservices.spring.orderservice.factories.FakeOrderFactory;
+import com.microservices.spring.orderservice.integration.BaseIntegrationTest;
 import com.microservices.spring.orderservice.models.Order;
 
 public class FindAllOrdersPagedTest extends BaseIntegrationTest {
