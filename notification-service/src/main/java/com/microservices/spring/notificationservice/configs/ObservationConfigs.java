@@ -1,4 +1,4 @@
-package com.microservices.spring.notificationservice;
+package com.microservices.spring.notificationservice.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

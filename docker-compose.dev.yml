@@ -137,6 +137,7 @@ services:
     volumes:
       - ./notification-service:/app/notification-service
       - ./order-service-contracts:/app/order-service-contracts
+      - ./auth-service-contracts:/app/auth-service-contracts
       - ./common:/app/common
       - ./pom.xml:/app/pom.xml
       - ./.env:/app/.env

@@ -16,5 +16,6 @@ import lombok.NoArgsConstructor;
 public class OrderPlacedEvent implements IKafkaEvent {
 
   private UUID orderNumber;
+  private UUID userId;
 
 }

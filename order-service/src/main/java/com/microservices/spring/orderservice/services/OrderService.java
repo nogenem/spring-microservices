@@ -55,7 +55,8 @@ public class OrderService {
     orderRepository.save(order);
 
     UUID orderNumber = order.getOrderNumber();
-    kafkaService.sendEventOnTopic(KafkaTopics.ORDER_TOPIC, orderNumber.toString(), new OrderPlacedEvent(orderNumber));
+    OrderPlacedEvent event = new OrderPlacedEvent(orderNumber, userId);
+    kafkaService.sendEventOnTopic(KafkaTopics.ORDER_TOPIC, orderNumber.toString(), event);
 
     log.info("Order saved. Id: {} - OrderNumber: {}", order.getId(), order.getOrderNumber());
 
