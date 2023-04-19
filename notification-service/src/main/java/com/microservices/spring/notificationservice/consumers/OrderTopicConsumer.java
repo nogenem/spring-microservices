@@ -1,14 +1,15 @@
-package com.microservices.spring.notificationservice.services;
+package com.microservices.spring.notificationservice.consumers;
 
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.microservices.spring.authservicecontracts.responses.UserEmailResponse;
 import com.microservices.spring.common.kafka.KafkaTopics;
+import com.microservices.spring.notificationservice.MailService;
 import com.microservices.spring.notificationservice.clients.AuthServiceClient;
 import com.microservices.spring.orderservicecontracts.events.OrderPlacedEvent;
 
@@ -16,12 +17,12 @@ import io.micrometer.observation.annotation.Observed;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@Component
 @Slf4j
 @AllArgsConstructor
 @Observed(name = "kafka-consumer-service")
 @KafkaListener(topics = KafkaTopics.ORDER_TOPIC, groupId = "notification-service-order-topic")
-public class KafkaConsumerService {
+public class OrderTopicConsumer {
 
   private final MailService mailService;
   private final AuthServiceClient authServiceClient;

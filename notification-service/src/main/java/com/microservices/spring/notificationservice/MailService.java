@@ -1,4 +1,4 @@
-package com.microservices.spring.notificationservice.services;
+package com.microservices.spring.notificationservice;
 
 import java.util.HashMap;
 import java.util.Map;
