@@ -14,6 +14,9 @@ services:
         service_folder_name: product-service
     deploy:
       replicas: ${PRODUCT_SERVICE_NUM_OF_REPLICAS}
+    mem_limit: ${DOCKER_COMPOSE_SERVICES_MEMORY_LIMIT}
+    environment:
+      JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
       - ${PRODUCT_SERVICE_HOST_MIN_PORT}-${PRODUCT_SERVICE_HOST_MAX_PORT}:${PRODUCT_SERVICE_CONTAINER_PORT} # App
       - ${PRODUCT_SERVICE_DEBUGGER_HOST_MIN_PORT}-${PRODUCT_SERVICE_DEBUGGER_HOST_MAX_PORT}:5005 # Debugger
@@ -42,6 +45,9 @@ services:
         service_folder_name: inventory-service
     deploy:
       replicas: ${INVENTORY_SERVICE_NUM_OF_REPLICAS}
+    mem_limit: ${DOCKER_COMPOSE_SERVICES_MEMORY_LIMIT}
+    environment:
+      JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
       - ${INVENTORY_SERVICE_HOST_MIN_PORT}-${INVENTORY_SERVICE_HOST_MAX_PORT}:${INVENTORY_SERVICE_CONTAINER_PORT} # App
       - ${INVENTORY_SERVICE_DEBUGGER_HOST_MIN_PORT}-${INVENTORY_SERVICE_DEBUGGER_HOST_MAX_PORT}:5005 # Debugger
@@ -70,6 +76,9 @@ services:
         service_folder_name: order-service
     deploy:
       replicas: ${ORDER_SERVICE_NUM_OF_REPLICAS}
+    mem_limit: ${DOCKER_COMPOSE_SERVICES_MEMORY_LIMIT}
+    environment:
+      JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
       - ${ORDER_SERVICE_HOST_MIN_PORT}-${ORDER_SERVICE_HOST_MAX_PORT}:${ORDER_SERVICE_CONTAINER_PORT} # App
       - ${ORDER_SERVICE_DEBUGGER_HOST_MIN_PORT}-${ORDER_SERVICE_DEBUGGER_HOST_MAX_PORT}:5005 # Debugger
@@ -102,6 +111,9 @@ services:
         service_folder_name: auth-service
     deploy:
       replicas: ${AUTH_SERVICE_NUM_OF_REPLICAS}
+    mem_limit: ${DOCKER_COMPOSE_SERVICES_MEMORY_LIMIT}
+    environment:
+      JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
       - ${AUTH_SERVICE_HOST_MIN_PORT}-${AUTH_SERVICE_HOST_MAX_PORT}:${AUTH_SERVICE_CONTAINER_PORT} # App
       - ${AUTH_SERVICE_DEBUGGER_HOST_MIN_PORT}-${AUTH_SERVICE_DEBUGGER_HOST_MAX_PORT}:5005 # Debugger
@@ -130,6 +142,9 @@ services:
         service_folder_name: notification-service
     deploy:
       replicas: ${NOTIFICATION_SERVICE_NUM_OF_REPLICAS}
+    mem_limit: ${DOCKER_COMPOSE_SERVICES_MEMORY_LIMIT}
+    environment:
+      JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
       - ${NOTIFICATION_SERVICE_HOST_MIN_PORT}-${NOTIFICATION_SERVICE_HOST_MAX_PORT}:${NOTIFICATION_SERVICE_CONTAINER_PORT} # App
       - ${NOTIFICATION_SERVICE_DEBUGGER_HOST_MIN_PORT}-${NOTIFICATION_SERVICE_DEBUGGER_HOST_MAX_PORT}:5005 # Debugger
@@ -169,6 +184,9 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    mem_limit: ${DOCKER_COMPOSE_SERVICES_MEMORY_LIMIT}
+    environment:
+      JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
       - ${DISCOVERY_SERVER_SERVICE_PORT}:${DISCOVERY_SERVER_SERVICE_PORT} # App
       - ${DISCOVERY_SERVER_SERVICE_DEBUGGER_PORT}:5005 # Debugger
@@ -191,6 +209,9 @@ services:
         useruid: ${DOCKER_IMAGES_OS_USERUID}
         usergid: ${DOCKER_IMAGES_OS_USERGID}
         service_folder_name: api-gateway-service
+    mem_limit: ${DOCKER_COMPOSE_SERVICES_MEMORY_LIMIT}
+    environment:
+      JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
       - ${API_GATEWAY_SERVICE_PORT}:${API_GATEWAY_SERVICE_PORT} # App
       - ${API_GATEWAY_SERVICE_DEBUGGER_PORT}:5005 # Debugger
