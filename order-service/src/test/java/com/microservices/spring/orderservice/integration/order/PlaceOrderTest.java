@@ -47,7 +47,7 @@ public class PlaceOrderTest extends BaseIntegrationTest {
 
   @BeforeEach
   public void beforeEach() {
-    setupOrderPlacedConsumer();
+    setupKafkaConsumer();
   }
 
   @Test
@@ -64,9 +64,9 @@ public class PlaceOrderTest extends BaseIntegrationTest {
         .header(CustomHeaders.USER_ID, userId)
         .content(objectMapper.writeValueAsString(request)));
 
-    var singleRecord = KafkaTestUtils.getSingleRecord(orderPlacedConsumer,
-        KafkaTopics.NOTIFICATION_TOPIC, Duration.ofSeconds(5));
-    OrderPlacedEvent event = singleRecord.value();
+    var singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer,
+        KafkaTopics.ORDER_TOPIC, Duration.ofSeconds(5));
+    OrderPlacedEvent event = (OrderPlacedEvent) singleRecord.value();
 
     Assertions.assertNotNull(event);
 

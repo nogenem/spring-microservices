@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -25,9 +26,9 @@ import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microservices.spring.common.kafka.IKafkaEvent;
 import com.microservices.spring.common.kafka.KafkaTopics;
 import com.microservices.spring.orderservice.OrderRepository;
-import com.microservices.spring.orderservicecontracts.events.OrderPlacedEvent;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -49,7 +50,7 @@ public abstract class BaseIntegrationTest {
   @Autowired
   protected OrderRepository orderRepository;
 
-  protected KafkaConsumer<String, OrderPlacedEvent> orderPlacedConsumer = null;
+  protected KafkaConsumer<String, IKafkaEvent> kafkaConsumer = null;
 
   @DynamicPropertySource
   static void dynamicProperties(DynamicPropertyRegistry registry) {
@@ -68,9 +69,9 @@ public abstract class BaseIntegrationTest {
     orderRepository.deleteAll();
   }
 
-  protected void setupOrderPlacedConsumer() {
-    if (orderPlacedConsumer != null) {
-      orderPlacedConsumer.close();
+  protected void setupKafkaConsumer() {
+    if (kafkaConsumer != null) {
+      kafkaConsumer.close();
     }
 
     Map<String, Object> props = new HashMap<>();
@@ -78,12 +79,13 @@ public abstract class BaseIntegrationTest {
     props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     props.put(ConsumerConfig.GROUP_ID_CONFIG, "order-group");
     props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+    props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
     props.put(JsonDeserializer.TRUSTED_PACKAGES,
         "com.microservices.spring.orderservicecontracts.events");
 
-    orderPlacedConsumer = new KafkaConsumer<>(props);
-    orderPlacedConsumer.subscribe(List.of(KafkaTopics.NOTIFICATION_TOPIC));
+    kafkaConsumer = new KafkaConsumer<>(props);
+    kafkaConsumer.subscribe(List.of(KafkaTopics.ORDER_TOPIC));
   }
 
 }
