@@ -1,0 +1,20 @@
+# Services Routes
+product-service:
+  uri: http://localhost:${wiremock.server.port}
+inventory-service:
+  uri: http://localhost:${wiremock.server.port}
+order-service:
+  uri: http://localhost:${wiremock.server.port}
+auth-service:
+  uri: http://localhost:${wiremock.server.port}
+discovery-server-service:
+  uri: http://localhost:${wiremock.server.port}
+
+spring:
+  cloud:
+    discovery:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false

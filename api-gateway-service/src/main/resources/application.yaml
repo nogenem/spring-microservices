@@ -1,0 +1,77 @@
+product-service:
+  uri: lb://product-service
+inventory-service:
+  uri: lb://inventory-service
+order-service:
+  uri: lb://order-service
+auth-service:
+  uri: lb://auth-service
+discovery-server-service:
+  uri: http://${DISCOVERY_SERVER_SERVICE_SECURITY_USERNAME}:${DISCOVERY_SERVER_SERVICE_SECURITY_PASSWORD}@${DISCOVERY_SERVER_SERVICE_HOSTNAME}:${DISCOVERY_SERVER_SERVICE_PORT}
+
+# responses:
+#   exceptions:
+#     return-stack-trace: true
+
+server:
+  port: ${API_GATEWAY_SERVICE_PORT}
+
+spring:
+  application:
+    name: api-gateway-service
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: product-service
+          uri: ${product-service.uri}
+          predicates:
+            - Path=/api/products/**
+
+        - id: inventory-service
+          uri: ${inventory-service.uri}
+          predicates:
+            - Path=/api/inventories/**
+
+        - id: order-service
+          uri: ${order-service.uri}
+          predicates:
+            - Path=/api/orders/**
+
+        - id: auth-service
+          uri: ${auth-service.uri}
+          predicates:
+            - Path=/api/auth/**
+
+        - id: discovery-server-service
+          uri: ${discovery-server-service.uri}
+          predicates:
+            - Path=/eureka/web
+          filters:
+            - SetPath=/
+
+        - id: discovery-server-service-static
+          uri: ${discovery-server-service.uri}
+          predicates:
+            - Path=/eureka/**
+
+logging:
+  # level:
+  #   org.springframework.cloud.gateway: DEBUG
+  #   reactor.netty.http.client: DEBUG
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:${ZIPKIN_PORT}/api/v2/spans
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${DISCOVERY_SERVER_SERVICE_SECURITY_USERNAME}:${DISCOVERY_SERVER_SERVICE_SECURITY_PASSWORD}@${DISCOVERY_SERVER_SERVICE_HOSTNAME}:${DISCOVERY_SERVER_SERVICE_PORT}/eureka/
