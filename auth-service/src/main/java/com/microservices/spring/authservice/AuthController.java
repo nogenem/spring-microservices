@@ -1,7 +1,11 @@
 package com.microservices.spring.authservice;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +16,9 @@ import com.microservices.spring.authservice.models.User;
 import com.microservices.spring.authservicecontracts.requests.SigninRequest;
 import com.microservices.spring.authservicecontracts.requests.SignupRequest;
 import com.microservices.spring.authservicecontracts.responses.TokenResponse;
+import com.microservices.spring.authservicecontracts.responses.UserEmailResponse;
 import com.microservices.spring.authservicecontracts.responses.UserResponse;
+import com.microservices.spring.common.exceptions.InvalidUserIdException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,6 +60,28 @@ public class AuthController {
     String token = authService.signin(request);
 
     return new TokenResponse(token);
+  }
+
+  @GetMapping("/users/{user_id}/email")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(summary = "Get user email by id")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "The user email found"),
+      @ApiResponse(responseCode = "400", description = "Invalid user_id", content = @Content),
+      @ApiResponse(responseCode = "404", description = "User with this id wasn't found", content = @Content) })
+  public UserEmailResponse findUserEmailByUserId(@PathVariable("user_id") String userId) {
+    UUID userIdUuid = userIdStringToUuid(userId);
+    User user = authService.findById(userIdUuid);
+
+    return mapStructMapper.userToUserEmailResponse(user);
+  }
+
+  private UUID userIdStringToUuid(String userId) {
+    try {
+      return UUID.fromString(userId);
+    } catch (IllegalArgumentException exception) {
+      throw new InvalidUserIdException(userId);
+    }
   }
 
 }

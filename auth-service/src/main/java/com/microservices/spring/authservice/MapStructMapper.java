@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 
 import com.microservices.spring.authservice.models.User;
 import com.microservices.spring.authservicecontracts.requests.SignupRequest;
+import com.microservices.spring.authservicecontracts.responses.UserEmailResponse;
 import com.microservices.spring.authservicecontracts.responses.UserResponse;
 
 @Mapper(componentModel = "spring")
@@ -17,5 +18,7 @@ public interface MapStructMapper {
   User signupRequestToUser(SignupRequest signupRequest);
 
   UserResponse userToUserResponse(User user);
+
+  UserEmailResponse userToUserEmailResponse(User user);
 
 }

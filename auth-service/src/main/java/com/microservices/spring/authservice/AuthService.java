@@ -1,15 +1,17 @@
 package com.microservices.spring.authservice;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.microservices.spring.authservice.exceptions.InvalidCredentialsException;
+import com.microservices.spring.authservice.exceptions.UserWithThisIdNotFoundException;
 import com.microservices.spring.authservice.models.User;
 import com.microservices.spring.authservicecontracts.requests.SigninRequest;
 import com.microservices.spring.authservicecontracts.requests.SignupRequest;
 import com.microservices.spring.common.JwtTokenService;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +36,7 @@ public class AuthService {
     return user;
   }
 
-  public String signin(@Valid SigninRequest request) {
+  public String signin(SigninRequest request) {
     User user = userRepository.findByEmail(request.getEmail())
         .orElseThrow(() -> new InvalidCredentialsException());
 
@@ -46,6 +48,11 @@ public class AuthService {
         request.getRememberMe());
 
     return tokenService.generateToken(user.getId().toString(), !request.getRememberMe());
+  }
+
+  public User findById(UUID userId) {
+    return userRepository.findById(userId)
+        .orElseThrow(() -> new UserWithThisIdNotFoundException(userId));
   }
 
   private boolean isValidPassword(String userPassword, String requestPassword) {
