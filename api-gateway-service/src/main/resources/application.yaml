@@ -24,6 +24,7 @@ spring:
   cloud:
     gateway:
       routes:
+        # /api/**
         - id: product-service
           uri: ${product-service.uri}
           predicates:
@@ -44,10 +45,11 @@ spring:
           predicates:
             - Path=/api/auth/**
 
+        # /admin/**/web
         - id: discovery-server-service
           uri: ${discovery-server-service.uri}
           predicates:
-            - Path=/eureka/web
+            - Path=/admin/eureka/web
           filters:
             - SetPath=/
 
@@ -56,10 +58,52 @@ spring:
           predicates:
             - Path=/eureka/**
 
+        - id: zipkin
+          uri: http://zipkin:${ZIPKIN_PORT}
+          predicates:
+            - Path=${ZIPKIN_UI_BASEPATH}
+          filters:
+            - SetPath=/zipkin/
+
+        - id: zipkin-static
+          uri: http://zipkin:${ZIPKIN_PORT}
+          predicates:
+            - Path=${ZIPKIN_UI_BASEPATH}/**
+          filters:
+            - RewritePath=${ZIPKIN_UI_BASEPATH}/(?<segment>.*),/zipkin/$\{segment}
+
+        - id: postgres-adminer
+          uri: http://postgres-adminer:8080
+          predicates:
+            - Path=/admin/adminer/web/**
+          filters:
+            - RewritePath=/admin/adminer/web/(?<segment>.*),/$\{segment}/
+
+        - id: kafka-ui
+          uri: http://kafka-ui:8080
+          predicates:
+            - Path=${KAFKA_UI_CONTEXT_PATH}
+
+        - id: kafka-ui-static
+          uri: http://kafka-ui:8080
+          predicates:
+            - Path=${KAFKA_UI_CONTEXT_PATH}/**
+
+        - id: product-service-mongo-express
+          uri: http://product-service-mongo-express:8081
+          predicates:
+            - Path=${PRODUCT_SERVICE_MONGO_EXPRESS_BASEURL}
+
+        - id: product-service-mongo-express-static
+          uri: http://product-service-mongo-express:8081
+          predicates:
+            - Path=${PRODUCT_SERVICE_MONGO_EXPRESS_BASEURL}/**
+
 logging:
-  # level:
-  #   org.springframework.cloud.gateway: DEBUG
-  #   reactor.netty.http.client: DEBUG
+  level:
+    # '[org.springframework.cloud.gateway]': DEBUG
+    # '[reactor.netty.http.client]': DEBUG
+    '[org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping]': TRACE
   pattern:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 

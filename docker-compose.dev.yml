@@ -252,6 +252,8 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${PRODUCT_SERVICE_MONGO_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${PRODUCT_SERVICE_MONGO_PASSWORD}
       ME_CONFIG_MONGODB_URL: mongodb://${PRODUCT_SERVICE_MONGO_USERNAME}:${PRODUCT_SERVICE_MONGO_PASSWORD}@${PRODUCT_SERVICE_MONGO_HOST}:${PRODUCT_SERVICE_MONGO_PORT}/
+      ME_CONFIG_SITE_BASEURL: ${PRODUCT_SERVICE_MONGO_EXPRESS_BASEURL}
+      ME_CONFIG_OPTIONS_EDITORTHEME: 'dracula'
     depends_on:
       - product-service-mongo
 
@@ -316,6 +318,8 @@ services:
     restart: always
     ports:
       - ${POSTGRES_ADMINER_PORT}:8080
+    environment:
+      ADMINER_DESIGN: 'dracula'
     depends_on:
       - inventory-service-postgres
       - order-service-postgres
@@ -324,6 +328,7 @@ services:
   zipkin:
     image: openzipkin/zipkin:2.24.0-amd64
     container_name: zipkin
+    command: --zipkin.ui.basepath=${ZIPKIN_UI_BASEPATH}
     restart: always
     environment:
       - QUERY_PORT=${ZIPKIN_PORT}
@@ -371,8 +376,9 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: spring-microservices
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:${BROKER_INTERNAL_PORT}
-      KAFKA_CLUSTERS_0_METRICS_PORT: 9998
+      KAFKA_CLUSTERS_0_METRICS_PORT: ${BROKER_METRICS_PORT}
       DYNAMIC_CONFIG_ENABLED: true
+      SERVER_SERVLET_CONTEXT_PATH: ${KAFKA_UI_CONTEXT_PATH}
     # volumes:
     #   - ./configs/kafka_ui_config.yaml:/etc/kafkaui/dynamic_config.yaml
     depends_on:
