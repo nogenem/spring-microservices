@@ -9,6 +9,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -23,15 +24,13 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class JwtAuthenticationFilter implements GlobalFilter {
 
-  private static final List<String> PUBLIC_ENDPOINTS = List.of(
-      // Auth
-      "/api/auth/signin",
-      "/api/auth/signup",
-      // Actuator
-      "/actuator/**",
-      // Eureka
-      "/",
-      "/eureka/**");
+  private static final List<String> PROTECTED_ENDPOINTS = List.of(
+      "/api/**");
+
+  private static final List<String> PROTECTED_ENDPOINTS_EXCEPTIONS = List.of(
+      "/api/signin",
+      "/api/signup");
+
   private static final String TOKEN_HEADER_KEY = "Authorization";
   private static final String TOKEN_HEADER_KEY_PREFIX = "Bearer ";
 
@@ -42,17 +41,15 @@ public class JwtAuthenticationFilter implements GlobalFilter {
     // https://github.com/roytuts/spring-cloud/blob/master/spring-cloud-gateway-security-jwt/spring-boot-cloud-gateway/src/main/java/com/roytuts/spring/boot/cloud/gateway/filter/JwtAuthenticationFilter.java
     ServerHttpRequest request = (ServerHttpRequest) exchange.getRequest();
 
-    Predicate<ServerHttpRequest> isSecuredEndpoint = r -> PUBLIC_ENDPOINTS.stream()
-        .noneMatch(uri -> {
-          if (uri.endsWith("/**")) {
-            return r.getURI().getPath().startsWith(uri.substring(0, uri.length() - 3));
-          } else if (uri.startsWith("**/")) {
-            return r.getURI().getPath().endsWith(uri.substring(3, uri.length()));
-          }
-          return r.getURI().getPath().equals(uri);
-        });
+    AntPathMatcher pathMatcher = new AntPathMatcher("/");
 
-    if (isSecuredEndpoint.test(request)) {
+    Predicate<ServerHttpRequest> isProtectedEndpoint = r -> PROTECTED_ENDPOINTS.stream()
+        .anyMatch(pattern -> pathMatcher.match(pattern, r.getPath().toString()));
+
+    Predicate<ServerHttpRequest> isProtectedEndpointException = r -> PROTECTED_ENDPOINTS_EXCEPTIONS.stream()
+        .anyMatch(pattern -> pathMatcher.match(pattern, r.getPath().toString()));
+
+    if (isProtectedEndpoint.test(request) && !isProtectedEndpointException.test(request)) {
       if (!request.getHeaders().containsKey(TOKEN_HEADER_KEY)) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
       }
