@@ -28,8 +28,8 @@ public class JwtAuthenticationFilter implements GlobalFilter {
       "/api/**");
 
   private static final List<String> PROTECTED_ENDPOINTS_EXCEPTIONS = List.of(
-      "/api/signin",
-      "/api/signup");
+      "/api/auth/signin",
+      "/api/auth/signup");
 
   private static final String TOKEN_HEADER_KEY = "Authorization";
   private static final String TOKEN_HEADER_KEY_PREFIX = "Bearer ";
