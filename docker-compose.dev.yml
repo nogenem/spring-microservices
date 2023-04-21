@@ -179,7 +179,7 @@ services:
           "CMD",
           "curl",
           "-f",
-          "http://discovery-server-service:${DISCOVERY_SERVER_SERVICE_PORT}"
+          "http://${DISCOVERY_SERVER_SERVICE_HOSTNAME}:${DISCOVERY_SERVER_SERVICE_CONTAINER_PORT}"
         ]
       interval: 5s
       timeout: 3s
@@ -188,9 +188,9 @@ services:
     environment:
       JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
-      - ${DISCOVERY_SERVER_SERVICE_PORT}:${DISCOVERY_SERVER_SERVICE_PORT} # App
-      - ${DISCOVERY_SERVER_SERVICE_DEBUGGER_PORT}:5005 # Debugger
-      - ${DISCOVERY_SERVER_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
+      - ${DISCOVERY_SERVER_SERVICE_HOST_PORT}:${DISCOVERY_SERVER_SERVICE_CONTAINER_PORT} # App
+      - ${DISCOVERY_SERVER_SERVICE_HOST_DEBUGGER_PORT}:5005 # Debugger
+      - ${DISCOVERY_SERVER_SERVICE_HOST_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./discovery-server-service:/app/discovery-server-service
       - ./pom.xml:/app/pom.xml
@@ -213,9 +213,9 @@ services:
     environment:
       JVM_OPTS: ${DOCKER_COMPOSE_SERVICES_JVM_OPTS}
     ports:
-      - ${API_GATEWAY_SERVICE_PORT}:${API_GATEWAY_SERVICE_PORT} # App
-      - ${API_GATEWAY_SERVICE_DEBUGGER_PORT}:5005 # Debugger
-      - ${API_GATEWAY_SERVICE_LIVE_RELOAD_PORT}:35729 # Livereload
+      - ${API_GATEWAY_SERVICE_HOST_PORT}:${API_GATEWAY_SERVICE_CONTAINER_PORT} # App
+      - ${API_GATEWAY_SERVICE_HOST_DEBUGGER_PORT}:5005 # Debugger
+      - ${API_GATEWAY_SERVICE_HOST_LIVE_RELOAD_PORT}:35729 # Livereload
     volumes:
       - ./api-gateway-service:/app/api-gateway-service
       - ./common:/app/common
@@ -230,12 +230,12 @@ services:
   product-service-mongo:
     container_name: product-service-mongo
     image: mongo:6.0.5
-    command: mongod --port ${PRODUCT_SERVICE_MONGO_PORT}
+    command: mongod --port ${PRODUCT_SERVICE_MONGO_CONTAINER_PORT}
     restart: always
     ports:
-      - ${PRODUCT_SERVICE_MONGO_PORT}:${PRODUCT_SERVICE_MONGO_PORT}
+      - ${PRODUCT_SERVICE_MONGO_HOST_PORT}:${PRODUCT_SERVICE_MONGO_CONTAINER_PORT}
     expose:
-      - ${PRODUCT_SERVICE_MONGO_PORT}
+      - ${PRODUCT_SERVICE_MONGO_CONTAINER_PORT}
     volumes:
       - ./_databases/product-service-mongo-data:/data/db:rw
     environment:
@@ -247,11 +247,11 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - ${PRODUCT_SERVICE_MONGO_EXPRESS_PORT}:8081
+      - ${PRODUCT_SERVICE_MONGO_EXPRESS_HOST_PORT}:${PRODUCT_SERVICE_MONGO_EXPRESS_CONTAINER_PORT}
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${PRODUCT_SERVICE_MONGO_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${PRODUCT_SERVICE_MONGO_PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${PRODUCT_SERVICE_MONGO_USERNAME}:${PRODUCT_SERVICE_MONGO_PASSWORD}@${PRODUCT_SERVICE_MONGO_HOST}:${PRODUCT_SERVICE_MONGO_PORT}/
+      ME_CONFIG_MONGODB_URL: mongodb://${PRODUCT_SERVICE_MONGO_USERNAME}:${PRODUCT_SERVICE_MONGO_PASSWORD}@${PRODUCT_SERVICE_MONGO_HOST}:${PRODUCT_SERVICE_MONGO_CONTAINER_PORT}/
       ME_CONFIG_SITE_BASEURL: ${PRODUCT_SERVICE_MONGO_EXPRESS_BASEURL}
       ME_CONFIG_OPTIONS_EDITORTHEME: 'dracula'
     depends_on:
@@ -261,55 +261,55 @@ services:
   inventory-service-postgres:
     container_name: inventory-service-postgres
     image: postgres:15.2
-    command: -p ${INVENTORY_SERVICE_POSTGRES_PORT}
+    command: -p ${INVENTORY_SERVICE_POSTGRES_CONTAINER_PORT}
     restart: always
     ports:
-      - ${INVENTORY_SERVICE_POSTGRES_PORT}:${INVENTORY_SERVICE_POSTGRES_PORT}
+      - ${INVENTORY_SERVICE_POSTGRES_HOST_PORT}:${INVENTORY_SERVICE_POSTGRES_CONTAINER_PORT}
     expose:
-      - ${INVENTORY_SERVICE_POSTGRES_PORT}
+      - ${INVENTORY_SERVICE_POSTGRES_CONTAINER_PORT}
     volumes:
       - ./_databases/inventory-service-postgres-data:/data/postgres:rw
     environment:
       POSTGRES_DB: ${INVENTORY_SERVICE_POSTGRES_DATABASE}
       POSTGRES_USER: ${INVENTORY_SERVICE_POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${INVENTORY_SERVICE_POSTGRES_PASSWORD}
-      PGPORT: ${INVENTORY_SERVICE_POSTGRES_PORT}
+      PGPORT: ${INVENTORY_SERVICE_POSTGRES_CONTAINER_PORT}
       PGDATA: /data/postgres
 
   order-service-postgres:
     container_name: order-service-postgres
     image: postgres:15.2
-    command: -p ${ORDER_SERVICE_POSTGRES_PORT}
+    command: -p ${ORDER_SERVICE_POSTGRES_CONTAINER_PORT}
     restart: always
     ports:
-      - ${ORDER_SERVICE_POSTGRES_PORT}:${ORDER_SERVICE_POSTGRES_PORT}
+      - ${ORDER_SERVICE_POSTGRES_HOST_PORT}:${ORDER_SERVICE_POSTGRES_CONTAINER_PORT}
     expose:
-      - ${ORDER_SERVICE_POSTGRES_PORT}
+      - ${ORDER_SERVICE_POSTGRES_CONTAINER_PORT}
     volumes:
       - ./_databases/order-service-postgres-data:/data/postgres:rw
     environment:
       POSTGRES_DB: ${ORDER_SERVICE_POSTGRES_DATABASE}
       POSTGRES_USER: ${ORDER_SERVICE_POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${ORDER_SERVICE_POSTGRES_PASSWORD}
-      PGPORT: ${ORDER_SERVICE_POSTGRES_PORT}
+      PGPORT: ${ORDER_SERVICE_POSTGRES_CONTAINER_PORT}
       PGDATA: /data/postgres
 
   auth-service-postgres:
     container_name: auth-service-postgres
     image: postgres:15.2
-    command: -p ${AUTH_SERVICE_POSTGRES_PORT}
+    command: -p ${AUTH_SERVICE_POSTGRES_CONTAINER_PORT}
     restart: always
     ports:
-      - ${AUTH_SERVICE_POSTGRES_PORT}:${AUTH_SERVICE_POSTGRES_PORT}
+      - ${AUTH_SERVICE_POSTGRES_HOST_PORT}:${AUTH_SERVICE_POSTGRES_CONTAINER_PORT}
     expose:
-      - ${AUTH_SERVICE_POSTGRES_PORT}
+      - ${AUTH_SERVICE_POSTGRES_CONTAINER_PORT}
     volumes:
       - ./_databases/auth-service-postgres-data:/data/postgres:rw
     environment:
       POSTGRES_DB: ${AUTH_SERVICE_POSTGRES_DATABASE}
       POSTGRES_USER: ${AUTH_SERVICE_POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${AUTH_SERVICE_POSTGRES_PASSWORD}
-      PGPORT: ${AUTH_SERVICE_POSTGRES_PORT}
+      PGPORT: ${AUTH_SERVICE_POSTGRES_CONTAINER_PORT}
       PGDATA: /data/postgres
 
   postgres-adminer:
@@ -317,7 +317,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - ${POSTGRES_ADMINER_PORT}:8080
+      - ${POSTGRES_ADMINER_HOST_PORT}:${POSTGRES_ADMINER_CONTAINER_PORT}
     environment:
       ADMINER_DESIGN: 'dracula'
     depends_on:
@@ -331,17 +331,20 @@ services:
     command: --zipkin.ui.basepath=${ZIPKIN_UI_BASEPATH}
     restart: always
     environment:
-      - QUERY_PORT=${ZIPKIN_PORT}
+      - QUERY_PORT=${ZIPKIN_CONTAINER_PORT}
     ports:
-      - ${ZIPKIN_PORT}:${ZIPKIN_PORT}
+      - ${ZIPKIN_HOST_PORT}:${ZIPKIN_CONTAINER_PORT}
 
   # Kafka
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
     container_name: zookeeper
+    restart: always
     environment:
-      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_CONTAINER_PORT}
       ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - ${ZOOKEEPER_CLIENT_HOST_PORT}:${ZOOKEEPER_CLIENT_CONTAINER_PORT}
     volumes:
       # https://docs.confluent.io/platform/current/installation/docker/operations/external-volumes.html#data-volumes-for-kafka-and-zk
       - ./_databases/zookeeper/data:/var/lib/zookeeper/data
@@ -350,32 +353,35 @@ services:
   broker:
     image: confluentinc/cp-kafka:7.3.2
     container_name: broker
+    restart: always
     ports:
-      - ${BROKER_EXTERNAL_PORT}:${BROKER_EXTERNAL_PORT}
-    depends_on:
-      - zookeeper
+      - ${BROKER_HOST_PORT}:${BROKER_HOST_PORT}
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:${ZOOKEEPER_CLIENT_PORT}'
+      KAFKA_ZOOKEEPER_CONNECT: '${ZOOKEEPER_HOSTNAME}:${ZOOKEEPER_CLIENT_CONTAINER_PORT}'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:${BROKER_EXTERNAL_PORT},PLAINTEXT_INTERNAL://broker:${BROKER_INTERNAL_PORT}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:${BROKER_HOST_PORT},PLAINTEXT_INTERNAL://${BROKER_HOSTNAME}:${BROKER_CONTAINER_PORT}
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      # KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
       KAFKA_JMX_PORT: ${BROKER_METRICS_PORT}
-      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=broker -Dcom.sun.management.jmxremote.rmi.port=${BROKER_METRICS_PORT}
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=${BROKER_HOSTNAME} -Dcom.sun.management.jmxremote.rmi.port=${BROKER_METRICS_PORT}
     volumes:
       # https://docs.confluent.io/platform/current/installation/docker/operations/external-volumes.html#data-volumes-for-kafka-and-zk
       - ./_databases/kafka/data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
 
   kafka-ui:
-    container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    restart: always
     ports:
-      - ${KAFKA_UI_PORT}:8080
+      - ${KAFKA_UI_HOST_PORT}:${KAFKA_UI_CONTAINER_PORT}
     environment:
       KAFKA_CLUSTERS_0_NAME: spring-microservices
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:${BROKER_INTERNAL_PORT}
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${BROKER_HOSTNAME}:${BROKER_CONTAINER_PORT}
       KAFKA_CLUSTERS_0_METRICS_PORT: ${BROKER_METRICS_PORT}
       DYNAMIC_CONFIG_ENABLED: true
       SERVER_SERVLET_CONTEXT_PATH: ${KAFKA_UI_CONTEXT_PATH}

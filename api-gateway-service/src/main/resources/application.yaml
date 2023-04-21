@@ -1,20 +1,20 @@
 product-service:
-  uri: lb://product-service
+  uri: lb://${PRODUCT_SERVICE_HOSTNAME}
 inventory-service:
-  uri: lb://inventory-service
+  uri: lb://${INVENTORY_SERVICE_HOSTNAME}
 order-service:
-  uri: lb://order-service
+  uri: lb://${ORDER_SERVICE_HOSTNAME}
 auth-service:
-  uri: lb://auth-service
+  uri: lb://${AUTH_SERVICE_HOSTNAME}
 discovery-server-service:
-  uri: http://${DISCOVERY_SERVER_SERVICE_SECURITY_USERNAME}:${DISCOVERY_SERVER_SERVICE_SECURITY_PASSWORD}@${DISCOVERY_SERVER_SERVICE_HOSTNAME}:${DISCOVERY_SERVER_SERVICE_PORT}
+  uri: http://${DISCOVERY_SERVER_SERVICE_SECURITY_USERNAME}:${DISCOVERY_SERVER_SERVICE_SECURITY_PASSWORD}@${DISCOVERY_SERVER_SERVICE_HOSTNAME}:${DISCOVERY_SERVER_SERVICE_CONTAINER_PORT}
 
 # responses:
 #   exceptions:
 #     return-stack-trace: true
 
 server:
-  port: ${API_GATEWAY_SERVICE_PORT}
+  port: ${API_GATEWAY_SERVICE_CONTAINER_PORT}
 
 spring:
   application:
@@ -59,33 +59,33 @@ spring:
             - Path=/eureka/**
 
         - id: zipkin
-          uri: http://zipkin:${ZIPKIN_PORT}
+          uri: http://${ZIPKIN_HOSTNAME}:${ZIPKIN_CONTAINER_PORT}
           predicates:
             - Path=${ZIPKIN_UI_BASEPATH}
           filters:
             - SetPath=/zipkin/
 
         - id: zipkin-static
-          uri: http://zipkin:${ZIPKIN_PORT}
+          uri: http://${ZIPKIN_HOSTNAME}:${ZIPKIN_CONTAINER_PORT}
           predicates:
             - Path=${ZIPKIN_UI_BASEPATH}/**
           filters:
             - RewritePath=${ZIPKIN_UI_BASEPATH}/(?<segment>.*),/zipkin/$\{segment}
 
         - id: postgres-adminer
-          uri: http://postgres-adminer:8080
+          uri: http://${POSTGRES_ADMINER_HOSTNAME}:${POSTGRES_ADMINER_CONTAINER_PORT}
           predicates:
             - Path=/admin/adminer/web/**
           filters:
             - RewritePath=/admin/adminer/web/(?<segment>.*),/$\{segment}/
 
         - id: kafka-ui
-          uri: http://kafka-ui:8080
+          uri: http://${KAFKA_UI_HOSTNAME}:${KAFKA_UI_CONTAINER_PORT}
           predicates:
             - Path=${KAFKA_UI_CONTEXT_PATH}
 
         - id: kafka-ui-static
-          uri: http://kafka-ui:8080
+          uri: http://${KAFKA_UI_HOSTNAME}:${KAFKA_UI_CONTAINER_PORT}
           predicates:
             - Path=${KAFKA_UI_CONTEXT_PATH}/**
 
@@ -113,9 +113,9 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: http://zipkin:${ZIPKIN_PORT}/api/v2/spans
+      endpoint: http://${ZIPKIN_HOSTNAME}:${ZIPKIN_CONTAINER_PORT}/api/v2/spans
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${DISCOVERY_SERVER_SERVICE_SECURITY_USERNAME}:${DISCOVERY_SERVER_SERVICE_SECURITY_PASSWORD}@${DISCOVERY_SERVER_SERVICE_HOSTNAME}:${DISCOVERY_SERVER_SERVICE_PORT}/eureka/
+      defaultZone: http://${DISCOVERY_SERVER_SERVICE_SECURITY_USERNAME}:${DISCOVERY_SERVER_SERVICE_SECURITY_PASSWORD}@${DISCOVERY_SERVER_SERVICE_HOSTNAME}:${DISCOVERY_SERVER_SERVICE_CONTAINER_PORT}/eureka/
