@@ -32,7 +32,8 @@ import com.microservices.spring.common.kafka.IKafkaEvent;
 public abstract class BaseIntegrationTest {
 
   public static KafkaContainer kafkaContainer = new KafkaContainer(
-      DockerImageName.parse("confluentinc/cp-kafka:7.3.2"));
+      DockerImageName.parse("confluentinc/cp-kafka:7.3.2"))
+      .withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLE", "false");
 
   @RegisterExtension
   public static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)

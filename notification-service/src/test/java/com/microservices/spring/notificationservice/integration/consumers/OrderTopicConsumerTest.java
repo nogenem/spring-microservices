@@ -53,7 +53,7 @@ public class OrderTopicConsumerTest extends BaseIntegrationTest {
         event);
     kafkaProducer.send(record);
 
-    await().atMost(2, SECONDS).untilAsserted(() -> {
+    await().atMost(3, SECONDS).untilAsserted(() -> {
       MimeMessage[] emails = greenMail.getReceivedMessagesForDomain(userEmailResponse.getEmail());
       Assertions.assertEquals(1, emails.length);
 

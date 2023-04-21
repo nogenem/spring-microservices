@@ -38,8 +38,10 @@ public abstract class BaseIntegrationTest {
 
   public static PostgreSQLContainer<?> postgresDBContainer = new PostgreSQLContainer<>(
       DockerImageName.parse("postgres:15.2"));
+
   public static KafkaContainer kafkaContainer = new KafkaContainer(
-      DockerImageName.parse("confluentinc/cp-kafka:7.3.2"));
+      DockerImageName.parse("confluentinc/cp-kafka:7.3.2"))
+      .withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLE", "false");
 
   @Autowired
   protected MockMvc mvc;
