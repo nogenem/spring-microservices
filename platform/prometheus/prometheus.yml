@@ -1,0 +1,66 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'product_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          ['%%PRODUCT_SERVICE_HOSTNAME%%:%%PRODUCT_SERVICE_CONTAINER_PORT%%']
+        labels:
+          application: 'Product Service Application'
+
+  - job_name: 'inventory_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          [
+            '%%INVENTORY_SERVICE_HOSTNAME%%:%%INVENTORY_SERVICE_CONTAINER_PORT%%',
+          ]
+        labels:
+          application: 'Inventory Service Application'
+
+  - job_name: 'order_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['%%ORDER_SERVICE_HOSTNAME%%:%%ORDER_SERVICE_CONTAINER_PORT%%']
+        labels:
+          application: 'Order Service Application'
+
+  - job_name: 'auth_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['%%AUTH_SERVICE_HOSTNAME%%:%%AUTH_SERVICE_CONTAINER_PORT%%']
+        labels:
+          application: 'Auth Service Application'
+
+  - job_name: 'notification_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          [
+            '%%NOTIFICATION_SERVICE_HOSTNAME%%:%%NOTIFICATION_SERVICE_CONTAINER_PORT%%',
+          ]
+        labels:
+          application: 'Notification Service Application'
+
+  - job_name: 'discovery_server_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          [
+            '%%DISCOVERY_SERVER_SERVICE_HOSTNAME%%:%%DISCOVERY_SERVER_SERVICE_CONTAINER_PORT%%',
+          ]
+        labels:
+          application: 'Discovery Server Service Application'
+
+  - job_name: 'api_gateway_service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          [
+            '%%API_GATEWAY_SERVICE_HOSTNAME%%:%%API_GATEWAY_SERVICE_CONTAINER_PORT%%',
+          ]
+        labels:
+          application: 'API Gateway Service Application'
