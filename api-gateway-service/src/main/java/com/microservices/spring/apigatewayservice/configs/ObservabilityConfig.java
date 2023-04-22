@@ -1,4 +1,4 @@
-package com.microservices.spring.apigatewayservice;
+package com.microservices.spring.apigatewayservice.configs;
 
 import org.springframework.boot.actuate.autoconfigure.observation.ObservationRegistryCustomizer;
 import org.springframework.cloud.gateway.filter.headers.observation.GatewayContext;

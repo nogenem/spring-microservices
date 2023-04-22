@@ -99,6 +99,20 @@ spring:
           predicates:
             - Path=${PRODUCT_SERVICE_MONGO_EXPRESS_BASEURL}/**
 
+        - id: grafana
+          uri: http://${GRAFANA_HOSTNAME}:${GRAFANA_CONTAINER_PORT}
+          predicates:
+            - Path=${GRAFANA_ROOT_URL}
+          filters:
+            - PreserveHostHeader
+
+        - id: grafana-static
+          uri: http://${GRAFANA_HOSTNAME}:${GRAFANA_CONTAINER_PORT}
+          predicates:
+            - Path=${GRAFANA_ROOT_URL}/**
+          filters:
+            - PreserveHostHeader
+
 logging:
   level:
     # '[org.springframework.cloud.gateway]': DEBUG
