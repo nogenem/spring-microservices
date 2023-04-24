@@ -1,0 +1,49 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    id: 1
+    uid: dnjtIyP4k
+    orgId: 1
+    access: proxy
+    url: http://$PROMETHEUS_HOSTNAME:$PROMETHEUS_PORT
+    basicAuth: false
+    isDefault: true
+    readOnly: false
+    jsonData:
+      httpMethod: POST
+  - name: Loki
+    type: loki
+    id: 2
+    uid: wf_mYlEVk
+    orgId: 1
+    access: proxy
+    url: http://$LOKI_HOSTNAME:$LOKI_PORT
+    basicAuth: false
+    isDefault: false
+    readOnly: false
+    jsonData:
+      derivedFields:
+        - datasourceUid: 0MRhcCPVk
+          matcherRegex: \[.+,(.+?),
+          name: TraceID
+          url: $${__value.raw}
+  - name: Tempo
+    type: tempo
+    id: 3
+    uid: 0MRhcCPVk
+    orgId: 1
+    access: proxy
+    url: http://$TEMPO_HOSTNAME:$TEMPO_PORT
+    basicAuth: false
+    isDefault: false
+    readOnly: false
+    jsonData:
+      httpMethod: GET
+      tracesToLogs:
+        datasourceUid: 'wf_mYlEVk'
+        mappedTags: [{ key: 'service.name', value: 'app' }]
+        mapTagNamesEnabled: true
+        filterByTraceID: true
+        filterBySpanID: false

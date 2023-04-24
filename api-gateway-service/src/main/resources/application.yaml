@@ -61,20 +61,6 @@ spring:
           predicates:
             - Path=/eureka/**
 
-        - id: zipkin
-          uri: http://${ZIPKIN_HOSTNAME}:${ZIPKIN_CONTAINER_PORT}
-          predicates:
-            - Path=${ZIPKIN_UI_BASEPATH}
-          filters:
-            - SetPath=/zipkin/
-
-        - id: zipkin-static
-          uri: http://${ZIPKIN_HOSTNAME}:${ZIPKIN_CONTAINER_PORT}
-          predicates:
-            - Path=${ZIPKIN_UI_BASEPATH}/**
-          filters:
-            - RewritePath=${ZIPKIN_UI_BASEPATH}/(?<segment>.*),/zipkin/$\{segment}
-
         - id: postgres-adminer
           uri: http://${POSTGRES_ADMINER_HOSTNAME}:${POSTGRES_ADMINER_CONTAINER_PORT}
           predicates:

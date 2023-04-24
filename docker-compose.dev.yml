@@ -197,7 +197,7 @@ services:
       - ./.env:/app/.env
       - ${HOME}/.m2:/home/${DOCKER_IMAGES_OS_USERNAME}/.m2
     depends_on:
-      - zipkin
+      - tempo
 
   api-gateway-service:
     container_name: api-gateway-service
@@ -324,17 +324,6 @@ services:
       - inventory-service-postgres
       - order-service-postgres
 
-  # Zipkin
-  zipkin:
-    image: openzipkin/zipkin:2.24.0-amd64
-    container_name: zipkin
-    command: --zipkin.ui.basepath=${ZIPKIN_UI_BASEPATH}
-    restart: always
-    environment:
-      - QUERY_PORT=${ZIPKIN_CONTAINER_PORT}
-    ports:
-      - ${ZIPKIN_HOST_PORT}:${ZIPKIN_CONTAINER_PORT}
-
   # Kafka
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
@@ -406,6 +395,8 @@ services:
       - PROMETHEUS_PORT=${PROMETHEUS_CONTAINER_PORT}
       - LOKI_HOSTNAME=${LOKI_HOSTNAME}
       - LOKI_PORT=${LOKI_CONTAINER_PORT}
+      - TEMPO_HOSTNAME=${TEMPO_HOSTNAME}
+      - TEMPO_PORT=${TEMPO_CONTAINER_PORT}
       - GF_SERVER_HTTP_PORT=${GRAFANA_CONTAINER_PORT}
       # - GF_SERVER_DOMAIN=localhost:${API_GATEWAY_SERVICE_HOST_PORT}
       - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s${GRAFANA_ROOT_URL}
@@ -473,5 +464,25 @@ services:
     volumes:
       - ./_databases/loki:/tmp/loki
       - ./platform/loki/local-config.yaml:/etc/loki/local-config.yaml
+    # user: ${DOCKER_IMAGES_OS_USERUID}:${DOCKER_IMAGES_OS_USERGID}
+    user: 'root:root'
+
+  tempo:
+    image: grafana/tempo:2.0.1
+    command:
+      [
+        "-config.file=/etc/local-config.yaml",
+        "-config.expand-env=true"
+      ]
+    ports:
+      - ${TEMPO_HOST_PORT}:${TEMPO_CONTAINER_PORT} # tempo
+      - ${ZIPKIN_HOST_PORT}:${ZIPKIN_CONTAINER_PORT} # zipkin
+      # - "14268:14268" # jaeger ingest
+    environment:
+      - TEMPO_PORT=${TEMPO_CONTAINER_PORT}
+      - ZIPKIN_PORT=${ZIPKIN_CONTAINER_PORT}
+    volumes:
+      - ./_databases/tempo:/tmp/tempo
+      - ./platform/tempo/local-config.yaml:/etc/local-config.yaml
     # user: ${DOCKER_IMAGES_OS_USERUID}:${DOCKER_IMAGES_OS_USERGID}
     user: 'root:root'
