@@ -29,6 +29,16 @@
       "name": "discovery-server-service.uri",
       "type": "java.lang.String",
       "description": "Uri of the discovery-server-service"
+    },
+    {
+      "name": "loki.hostname",
+      "type": "java.lang.String",
+      "description": "Grafana Loki's hostname"
+    },
+    {
+      "name": "loki.port",
+      "type": "java.lang.String",
+      "description": "Grafana Loki's port"
     }
   ]
 }

@@ -1,11 +1,6 @@
 {
   "properties": [
     {
-      "name": "feign-client.auth-service.url",
-      "type": "java.lang.String",
-      "description": "Url for the auth-service to be used by the Feign Client lib"
-    },
-    {
       "name": "loki.hostname",
       "type": "java.lang.String",
       "description": "Grafana Loki's hostname"

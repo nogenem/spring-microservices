@@ -404,6 +404,8 @@ services:
     environment:
       - PROMETHEUS_HOSTNAME=${PROMETHEUS_HOSTNAME}
       - PROMETHEUS_PORT=${PROMETHEUS_CONTAINER_PORT}
+      - LOKI_HOSTNAME=${LOKI_HOSTNAME}
+      - LOKI_PORT=${LOKI_CONTAINER_PORT}
       - GF_SERVER_HTTP_PORT=${GRAFANA_CONTAINER_PORT}
       # - GF_SERVER_DOMAIN=localhost:${API_GATEWAY_SERVICE_HOST_PORT}
       - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s${GRAFANA_ROOT_URL}
@@ -455,3 +457,21 @@ services:
       - notification-service
       - discovery-server-service
       - api-gateway-service
+
+  loki:
+    image: grafana/loki:2.8.0
+    container_name: loki
+    command:
+      [
+        "-config.file=/etc/loki/local-config.yaml",
+        "-config.expand-env=true"
+      ]
+    ports:
+      - ${LOKI_HOST_PORT}:${LOKI_CONTAINER_PORT}
+    environment:
+      - LOKI_PORT=${LOKI_CONTAINER_PORT}
+    volumes:
+      - ./_databases/loki:/tmp/loki
+      - ./platform/loki/local-config.yaml:/etc/loki/local-config.yaml
+    # user: ${DOCKER_IMAGES_OS_USERUID}:${DOCKER_IMAGES_OS_USERGID}
+    user: 'root:root'

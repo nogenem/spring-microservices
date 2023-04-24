@@ -13,3 +13,12 @@ datasources:
     readOnly: false
     jsonData:
       httpMethod: POST
+  - name: Loki
+    type: loki
+    id: 2
+    uid: wf_mYlEVk
+    orgId: 1
+    url: http://$LOKI_HOSTNAME:$LOKI_PORT
+    basicAuth: false
+    isDefault: false
+    readOnly: false

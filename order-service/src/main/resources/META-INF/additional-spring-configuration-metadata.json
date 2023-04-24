@@ -14,6 +14,16 @@
       "name": "feign-client.product-service.url",
       "type": "java.lang.String",
       "description": "Url for the product-service to be used by the Feign Client lib"
+    },
+    {
+      "name": "loki.hostname",
+      "type": "java.lang.String",
+      "description": "Grafana Loki's hostname"
+    },
+    {
+      "name": "loki.port",
+      "type": "java.lang.String",
+      "description": "Grafana Loki's port"
     }
   ]
 }

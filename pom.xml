@@ -47,6 +47,7 @@
     <feign-core.version>12.3</feign-core.version>
     <feign-micrometer.version>12.3</feign-micrometer.version>
     <greenmail.version>2.0.0</greenmail.version>
+    <loki-logback-appender.version>1.4.0</loki-logback-appender.version>
   </properties>
 
   <dependencyManagement>
@@ -142,6 +143,11 @@
         <groupId>com.icegreen</groupId>
         <artifactId>greenmail-junit5</artifactId>
         <version>${greenmail.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.loki4j</groupId>
+        <artifactId>loki-logback-appender</artifactId>
+        <version>${loki-logback-appender.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
