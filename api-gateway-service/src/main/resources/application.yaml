@@ -1,3 +1,8 @@
+# Services
+api-gateway-service:
+  admin:
+    username: admin
+    password: admin
 product-service:
   uri: lb://${PRODUCT_SERVICE_HOSTNAME}
 inventory-service:
@@ -104,8 +109,10 @@ spring:
 
 logging:
   level:
-    # '[org.springframework.cloud.gateway]': DEBUG
+    # '[org.springframework.web.HttpLogging]': TRACE
+    # '[reactor.netty.http.server]': DEBUG
     # '[reactor.netty.http.client]': DEBUG
+    # '[org.springframework.web]': TRACE
     '[org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping]': TRACE
   pattern:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'

@@ -39,6 +39,16 @@
       "name": "loki.port",
       "type": "java.lang.String",
       "description": "Grafana Loki's port"
+    },
+    {
+      "name": "api-gateway-service.admin.username",
+      "type": "java.lang.String",
+      "description": "Admin username to access /admin/** routes"
+    },
+    {
+      "name": "api-gateway-service.admin.password",
+      "type": "java.lang.String",
+      "description": "Admin password to access /admin/** routes"
     }
   ]
 }
