@@ -136,3 +136,9 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${DISCOVERY_SERVER_SERVICE_SECURITY_USERNAME}:${DISCOVERY_SERVER_SERVICE_SECURITY_PASSWORD}@${DISCOVERY_SERVER_SERVICE_HOSTNAME}:${DISCOVERY_SERVER_SERVICE_CONTAINER_PORT}/eureka/
+  instance:
+    metadataMap:
+      prometheus:
+        scrape: true
+        path: /actuator/prometheus
+        # port: ${PRODUCT_SERVICE_CONTAINER_PORT}

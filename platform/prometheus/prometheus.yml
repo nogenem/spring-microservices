@@ -1,49 +1,16 @@
 global:
-  scrape_interval: 5s
-  evaluation_interval: 5s
+  scrape_interval: 15s
+  evaluation_interval: 15s
 
+# Based on: https://github.com/prometheus/prometheus/blob/release-2.43/documentation/examples/prometheus-eureka.yml
+# Based on: https://github.dev/barrycommins/prometheus-eureka-spring-boot-demo
 scrape_configs:
-  - job_name: 'product_service'
-    metrics_path: '/actuator/prometheus'
+  - job_name: 'prometheus'
+    metrics_path: /metrics
     static_configs:
-      - targets:
-          ['%%PRODUCT_SERVICE_HOSTNAME%%:%%PRODUCT_SERVICE_CONTAINER_PORT%%']
+      - targets: ['%%PROMETHEUS_HOSTNAME%%:%%PROMETHEUS_PORT%%']
         labels:
-          application: 'Product Service Application'
-
-  - job_name: 'inventory_service'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets:
-          [
-            '%%INVENTORY_SERVICE_HOSTNAME%%:%%INVENTORY_SERVICE_CONTAINER_PORT%%',
-          ]
-        labels:
-          application: 'Inventory Service Application'
-
-  - job_name: 'order_service'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: ['%%ORDER_SERVICE_HOSTNAME%%:%%ORDER_SERVICE_CONTAINER_PORT%%']
-        labels:
-          application: 'Order Service Application'
-
-  - job_name: 'auth_service'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: ['%%AUTH_SERVICE_HOSTNAME%%:%%AUTH_SERVICE_CONTAINER_PORT%%']
-        labels:
-          application: 'Auth Service Application'
-
-  - job_name: 'notification_service'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets:
-          [
-            '%%NOTIFICATION_SERVICE_HOSTNAME%%:%%NOTIFICATION_SERVICE_CONTAINER_PORT%%',
-          ]
-        labels:
-          application: 'Notification Service Application'
+          application: 'PROMETHEUS'
 
   - job_name: 'discovery_server_service'
     metrics_path: '/actuator/prometheus'
@@ -53,14 +20,33 @@ scrape_configs:
             '%%DISCOVERY_SERVER_SERVICE_HOSTNAME%%:%%DISCOVERY_SERVER_SERVICE_CONTAINER_PORT%%',
           ]
         labels:
-          application: 'Discovery Server Service Application'
+          application: 'DISCOVERY-SERVER-SERVICE'
 
-  - job_name: 'api_gateway_service'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets:
-          [
-            '%%API_GATEWAY_SERVICE_HOSTNAME%%:%%API_GATEWAY_SERVICE_CONTAINER_PORT%%',
-          ]
-        labels:
-          application: 'API Gateway Service Application'
+  - job_name: 'eureka'
+    eureka_sd_configs:
+      - server: http://%%EUREKA_HOSTNAME%%:%%EUREKA_PORT%%/eureka
+        basic_auth:
+          username: %%EUREKA_SECURITY_USERNAME%%
+          password: %%EUREKA_SECURITY_PASSWORD%%
+    relabel_configs:
+      - source_labels: [__meta_eureka_app_name]
+        target_label: application
+
+      # "prometheus.scrape = true" metadata.
+      - source_labels: [__meta_eureka_app_instance_metadata_prometheus_scrape]
+        action: keep
+        regex: true
+
+      # "prometheus.path = <metric path>" annotation.
+      - source_labels: [__meta_eureka_app_instance_metadata_prometheus_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+
+      # based on application "prometheus.port = <port>" metadata.
+      # - source_labels:
+      #     [__address__, __meta_eureka_app_instance_metadata_prometheus_port]
+      #   action: replace
+      #   regex: ([^:]+)(?::\d+)?;(\d+)
+      #   replacement: $1:$2
+      #   target_label: __address_
