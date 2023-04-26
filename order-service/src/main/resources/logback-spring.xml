@@ -23,6 +23,8 @@
   </appender>
 
   <root level="INFO">
-    <appender-ref ref="LOKI"/>
+    <springProfile name="!test">
+      <appender-ref ref="LOKI"/>
+    </springProfile>
   </root>
 </configuration>
